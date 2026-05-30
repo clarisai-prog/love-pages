@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Heart } from 'lucide-react';
 
 interface ValentinePopupProps {
@@ -8,66 +8,157 @@ interface ValentinePopupProps {
 export default function ValentinePopup({ onClose }: ValentinePopupProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
-  const [isOpening, setIsOpening] = useState(false);
-  const heartContainerRef = useRef<HTMLDivElement>(null);
+  const [heartScale, setHeartScale] = useState(0.15);
+  const [tapOpacity, setTapOpacity] = useState(1);
+  const [hasExploded, setHasExploded] = useState(false);
+  const [showMinis, setShowMinis] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const popupRef = useRef<HTMLDivElement>(null);
+  const heartWrapperRef = useRef<HTMLDivElement>(null);
+
+  const miniHearts = Array.from({ length: 12 });
+  const angles = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330];
 
   useEffect(() => {
-    // Trigger entrance animation
-    requestAnimationFrame(() => {
-      setIsVisible(true);
-    });
+    requestAnimationFrame(() => setIsVisible(true));
   }, []);
 
+  useEffect(() => {
+    const popup = popupRef.current;
+    if (!popup) return;
+
+    let ticking = false;
+
+    const handleScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const scrollTop = popup.scrollTop;
+        const maxScroll = popup.scrollHeight - popup.clientHeight;
+        if (maxScroll <= 0) return;
+
+        const progress = Math.min(scrollTop / maxScroll, 1);
+
+        /* FASE 1: Coração cresce (0% ~ 60%) */
+        let scale: number;
+        if (progress <= 0.6) {
+          scale = 0.15 + (progress / 0.6) * 3.35; // 0.15 → 3.5
+        } else {
+          /* FASE 2: Coração encolhe (60% ~ 100%) */
+          const shrinkProgress = (progress - 0.6) / 0.4;
+          scale = 3.5 - shrinkProgress * 3.35;
+        }
+        setHeartScale(Math.max(scale, 0.15));
+
+        /* Texto Toque some entre 0% e 15% */
+        setTapOpacity(Math.max(1 - progress / 0.15, 0));
+
+        /* FASE 3: Explosão dos mini corações (~45%) */
+        if (progress > 0.45 && progress < 0.75 && !hasExploded) {
+          setHasExploded(true);
+          setShowMinis(true);
+          setTimeout(() => setShowMinis(false), 1000);
+        }
+
+        /* FASE 4: Fecha popup quando scroll acaba */
+        if (progress >= 0.95 && !isClosing) {
+          handleClose();
+        }
+
+        /* Reset se voltar ao topo */
+        if (progress < 0.3 && hasExploded) {
+          setHasExploded(false);
+        }
+
+        ticking = false;
+      });
+    };
+
+    popup.addEventListener('scroll', handleScroll, { passive: true });
+    return () => popup.removeEventListener('scroll', handleScroll);
+  }, [hasExploded, isClosing]);
+
   const handleClose = () => {
+    if (isClosing) return;
     setIsClosing(true);
     setTimeout(onClose, 500);
   };
 
-  const handleHeartClick = () => {
-    if (isOpening) return;
-    setIsOpening(true);
-
-    // Create mini heart burst
-    if (heartContainerRef.current) {
-      const container = heartContainerRef.current;
-      const count = 12;
-
-      for (let i = 0; i < count; i++) {
-        const angle = (i / count) * 360;
-        const distance = 80 + Math.random() * 60;
-        const tx = Math.cos((angle * Math.PI) / 180) * distance;
-        const ty = Math.sin((angle * Math.PI) / 180) * distance;
-
-        const mini = document.createElement('div');
-        mini.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="#f8dee2"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`;
-        mini.className = 'mini-heart';
-        mini.style.left = '50%';
-        mini.style.top = '50%';
-        mini.style.setProperty('--tx', `${tx}px`);
-        mini.style.setProperty('--ty', `${ty}px`);
-        container.appendChild(mini);
-      }
-
-      // Clean up mini hearts after animation
-      setTimeout(() => {
-        container.querySelectorAll('.mini-heart').forEach((el) => el.remove());
-      }, 1000);
-    }
-
-    // Close popup after heart opens
-    setTimeout(handleClose, 700);
-  };
-
   return (
     <div
-      className={`fixed inset-0 z-[100000] flex items-center justify-center bg-[#f8dee2] transition-all duration-500 ${
+      ref={popupRef}
+      className={`fixed inset-0 z-[100000] overflow-y-auto overflow-x-hidden bg-[#f8dee2] transition-opacity duration-500 ${
         isVisible && !isClosing ? 'opacity-100' : 'opacity-0 pointer-events-none'
       }`}
     >
-      <div className="relative w-full max-w-5xl mx-auto px-6 py-12 flex flex-col items-center justify-center min-h-screen">
+      {/* Barra de progresso */}
+      <div
+        className="fixed top-0 left-0 h-[3px] bg-[#b00d1e] z-[100001] transition-none"
+        style={{ width: `${Math.min(((popupRef.current?.scrollTop || 0) / ((popupRef.current?.scrollHeight || 1) - (popupRef.current?.clientHeight || 1))) * 100, 100)}%` }}
+      />
+
+      {/* Coração principal — fixed no centro */}
+      <div
+        ref={heartWrapperRef}
+        className="fixed top-1/2 left-1/2 z-[100010] pointer-events-none"
+        style={{
+          transform: `translate(-50%, -50%) scale(${heartScale})`,
+          willChange: 'transform',
+        }}
+      >
+        <Heart
+          className="w-40 h-40 md:w-48 md:h-48 text-[#c3505c] fill-[#c3505c]"
+          strokeWidth={0}
+          style={{ filter: 'drop-shadow(0 20px 60px rgba(195, 80, 92, 0.3))' }}
+        />
+      </div>
+
+      {/* Texto Toque */}
+      <div
+        className="fixed top-[62%] left-1/2 -translate-x-1/2 z-[100011] pointer-events-none font-body text-lg md:text-xl text-[#b00d1e] tracking-[3px] transition-opacity duration-300"
+        style={{ opacity: tapOpacity }}
+      >
+        Toque
+      </div>
+
+      {/* Mini corações — explodem radialmente */}
+      {showMinis &&
+        miniHearts.map((_, i) => {
+          const angle = angles[i % angles.length] * (Math.PI / 180);
+          const distance = 80 + Math.random() * 120;
+          const tx = Math.cos(angle) * distance;
+          const ty = Math.sin(angle) * distance;
+          const scale = 0.5 + Math.random() * 0.5;
+
+          return (
+            <div
+              key={i}
+              className="fixed top-1/2 left-1/2 z-[100009] pointer-events-none"
+              style={{
+                transform: `translate(-50%, -50%)`,
+              }}
+            >
+              <div
+                className="text-[#c3505c]"
+                style={{
+                  animation: `miniHeartBurst 0.9s cubic-bezier(0.25, 1, 0.5, 1) forwards`,
+                  '--tx': `${tx}px`,
+                  '--ty': `${ty}px`,
+                  '--scale': scale,
+                } as React.CSSProperties}
+              >
+                <Heart className="w-6 h-6 fill-current" strokeWidth={0} />
+              </div>
+            </div>
+          );
+        })}
+
+      {/* Palco de scroll — altura grande para dar "peso" */}
+      <div ref={scrollRef} className="relative h-[400vh]">
+        {/* Polaroids posicionadas absolutas no palco */}
         {/* Left Polaroid */}
         <div
-          className={`absolute left-[5%] md:left-[10%] top-[15%] transition-all duration-1000 delay-300 ${
+          className={`absolute left-[5%] md:left-[10%] top-[8%] transition-all duration-1000 delay-300 ${
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
           }`}
           style={{ transform: 'rotate(-8deg)' }}
@@ -81,7 +172,6 @@ export default function ValentinePopup({ onClose }: ValentinePopupProps) {
               />
             </div>
           </div>
-          {/* Washi tape image */}
           <img
             src="/images/popup/washi-tape.png"
             alt="Fita decorativa"
@@ -91,7 +181,7 @@ export default function ValentinePopup({ onClose }: ValentinePopupProps) {
 
         {/* Right Polaroid */}
         <div
-          className={`absolute right-[5%] md:right-[10%] bottom-[15%] transition-all duration-1000 delay-500 ${
+          className={`absolute right-[5%] md:right-[10%] top-[25%] transition-all duration-1000 delay-500 ${
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
           }`}
           style={{ transform: 'rotate(6deg)' }}
@@ -105,7 +195,6 @@ export default function ValentinePopup({ onClose }: ValentinePopupProps) {
               />
             </div>
           </div>
-          {/* Washi tape image */}
           <img
             src="/images/popup/washi-tape.png"
             alt="Fita decorativa"
@@ -115,7 +204,7 @@ export default function ValentinePopup({ onClose }: ValentinePopupProps) {
 
         {/* Title */}
         <div
-          className={`text-center z-10 transition-all duration-1000 delay-200 ${
+          className={`absolute top-[40%] left-1/2 -translate-x-1/2 text-center z-[100005] transition-all duration-1000 delay-200 ${
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
           }`}
         >
@@ -133,30 +222,22 @@ export default function ValentinePopup({ onClose }: ValentinePopupProps) {
           </h2>
         </div>
 
-        {/* Heart Button */}
-        <button
-          onClick={handleHeartClick}
-          disabled={isOpening}
-          className={`mt-12 relative z-10 group transition-all duration-700 delay-700 ${
-            isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-50'
-          }`}
-        >
-          <div className="relative" ref={heartContainerRef}>
-            <Heart
-              className={`w-32 h-32 md:w-40 md:h-40 text-[#c3505c] fill-[#c3505c] transition-transform duration-300 group-hover:scale-110 ${
-                isOpening ? 'heart-opening' : ''
-              }`}
-              strokeWidth={0}
-            />
-            <span
-              className={`absolute inset-0 flex items-center justify-center text-[#f8dee2] font-body text-sm md:text-base tracking-wide transition-opacity duration-300 ${
-                isOpening ? 'opacity-0' : 'opacity-100'
-              }`}
-            >
-              Toque
-            </span>
-          </div>
-        </button>
+        {/* Marcadores de scroll */}
+        <div className="absolute top-[85%] left-1/2 -translate-x-1/2 text-center">
+          <p className="font-body text-sm text-[#b00d1e]/50 tracking-wide animate-bounce">
+            Continue rolando ↓
+          </p>
+        </div>
+
+        {/* Fim do palco — botão para fechar caso scroll não funcione */}
+        <div className="absolute bottom-[5%] left-1/2 -translate-x-1/2">
+          <button
+            onClick={handleClose}
+            className="font-body text-xs text-[#b00d1e]/40 hover:text-[#b00d1e]/70 transition-colors tracking-wide underline underline-offset-4"
+          >
+            entrar no site
+          </button>
+        </div>
       </div>
     </div>
   );
