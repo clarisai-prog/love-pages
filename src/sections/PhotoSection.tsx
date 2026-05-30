@@ -32,7 +32,7 @@ export default function PhotoSection() {
       >
         <img
           src="/images/couple-main.jpg"
-          alt="Наше фото"
+          alt="Nossa foto"
           className="w-full h-auto object-cover grayscale"
           style={{ maxHeight: '80vh' }}
         />

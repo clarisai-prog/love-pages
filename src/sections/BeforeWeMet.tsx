@@ -38,7 +38,7 @@ export default function BeforeWeMet() {
             className="font-display text-4xl md:text-5xl lg:text-6xl text-[#b00d1e]"
             style={{ fontWeight: 500 }}
           >
-            до нашей встречи
+            antes de nos conhecermos
           </h2>
         </div>
 
@@ -62,7 +62,7 @@ export default function BeforeWeMet() {
                 </div>
                 {/* Handwritten caption */}
                 <p className="mt-3 text-center font-body text-xs text-[#8b7355] italic">
-                  Когда мы были просто детьми...
+                  Quando éramos apenas crianças...
                 </p>
               </div>
 
@@ -86,8 +86,8 @@ export default function BeforeWeMet() {
             }`}
           >
             <p className="font-body text-base md:text-lg text-[#b00d1e]/80 leading-relaxed">
-              Мы были просто детьми, не зная, что однажды станем самым важным «мы»
-              в жизни друг друга
+              Éramos apenas crianças, sem saber que um dia seríamos o mais importante "nós"
+              na vida um do outro
             </p>
 
             {/* Decorative divider */}
@@ -101,7 +101,7 @@ export default function BeforeWeMet() {
 
             {/* Quote */}
             <blockquote className="mt-8 font-display text-xl md:text-2xl text-[#b00d1e]/60 italic leading-relaxed">
-              «Каждая история любови прекрасна, но наша — моя любимая»
+              "Toda história de amor é linda, mas a nossa é a minha favorita"
             </blockquote>
           </div>
         </div>

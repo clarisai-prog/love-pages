@@ -84,9 +84,9 @@ export default function ThankYouSection() {
               color: '#c3505c',
             }}
           >
-            Спасибо за наше «сейчас»
+            Obrigada pelo nosso "agora"
             <br />
-            <span className="text-[#b00d1e]">и за всё, что нас ждёт впереди</span>
+            <span className="text-[#b00d1e]">e por tudo que nos espera pela frente</span>
           </h2>
         </div>
 
@@ -97,13 +97,13 @@ export default function ThankYouSection() {
           }`}
         >
           <p className="font-body text-sm text-[#b00d1e]/60 tracking-wide">
-            С любовью,
+            Com amor,
           </p>
           <p
             className="font-display text-2xl md:text-3xl text-[#b00d1e] mt-2"
             style={{ fontWeight: 500 }}
           >
-            Твоя Эля
+            Sua amada
           </p>
         </div>
 

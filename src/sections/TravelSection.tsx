@@ -68,12 +68,12 @@ export default function TravelSection() {
               className="font-display text-3xl md:text-4xl lg:text-5xl text-[#f8dde2] leading-tight mb-6"
               style={{ fontWeight: 500 }}
             >
-              Открываем новые места
+              Descobrindo novos lugares
             </h2>
 
             <p className="font-body text-sm md:text-base text-[#f8dde2]/80 leading-relaxed max-w-md">
-              Я люблю путешествовать с тобой на машине, ведь ты всегда готов поехать
-              в любое место, куда бы мне ни захотелось
+              Eu amo viajar com você de carro, porque você sempre está pronto para ir
+              a qualquer lugar que eu queira
             </p>
 
             {/* Decorative elements */}

@@ -45,9 +45,9 @@ export default function OpeningText() {
           }`}
           style={{ fontWeight: 400 }}
         >
-          Тёма, этот сайт — маленькое напоминание о том,
+          Esse site é um pequeno lembrete
           <br />
-          как сильно я тебя люблю
+          de como eu te amo muito
         </p>
       </div>
 

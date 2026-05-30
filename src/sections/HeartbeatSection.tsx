@@ -57,9 +57,9 @@ export default function HeartbeatSection() {
             className="font-display text-3xl md:text-5xl lg:text-6xl text-[#f8dee3] leading-tight mb-4"
             style={{ fontWeight: 500 }}
           >
-            так бьётся моё сердце,
+            assim bate meu coração,
             <br />
-            когда ты рядом
+            quando você está por perto
           </h2>
         </div>
 
@@ -113,7 +113,7 @@ export default function HeartbeatSection() {
             isVisible ? 'opacity-100' : 'opacity-0'
           }`}
         >
-          Нажми на сердце
+          Toque no coração
         </p>
       </div>
     </section>

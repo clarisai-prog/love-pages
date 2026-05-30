@@ -4,25 +4,25 @@ const moments = [
   {
     id: 1,
     image: '/images/moment-1.jpg',
-    caption: 'Пикник в парке',
+    caption: 'Piquenique no parque',
     rotation: -6,
   },
   {
     id: 2,
     image: '/images/moment-2.jpg',
-    caption: 'Закат на пляже',
+    caption: 'Pôr do sol na praia',
     rotation: 4,
   },
   {
     id: 3,
     image: '/images/moment-3.jpg',
-    caption: 'Совместный ужин',
+    caption: 'Jantar juntos',
     rotation: -3,
   },
   {
     id: 4,
     image: '/images/moment-4.jpg',
-    caption: 'Кафе в Европе',
+    caption: 'Café na Europa',
     rotation: 5,
   },
 ];
@@ -65,7 +65,7 @@ export default function MomentsGallery() {
             className="font-display text-4xl md:text-5xl lg:text-6xl text-[#b00d1e]"
             style={{ fontWeight: 500 }}
           >
-            Наши моменты
+            Nossos momentos
           </h2>
         </div>
 
@@ -76,7 +76,7 @@ export default function MomentsGallery() {
           }`}
         >
           <p className="font-body text-sm md:text-base text-[#b00d1e]/80 max-w-lg mx-auto leading-relaxed">
-            И ещё сотни мгновений, которые я бы хотела пережить с тобой снова и снова…
+            E ainda centenas de momentos que eu gostaria de reviver com você, de novo e de novo…
           </p>
         </div>
 

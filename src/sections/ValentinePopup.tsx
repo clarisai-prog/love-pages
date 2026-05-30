@@ -39,7 +39,7 @@ export default function ValentinePopup({ onClose }: ValentinePopupProps) {
             <div className="w-40 h-48 md:w-52 md:h-60 bg-gray-200 overflow-hidden">
               <img
                 src="/images/polaroid-left.jpg"
-                alt="Couple memory"
+                alt="Lembrança do casal"
                 className="w-full h-full object-cover grayscale"
               />
             </div>
@@ -65,7 +65,7 @@ export default function ValentinePopup({ onClose }: ValentinePopupProps) {
             <div className="w-40 h-48 md:w-52 md:h-60 bg-gray-200 overflow-hidden">
               <img
                 src="/images/polaroid-right.jpg"
-                alt="Couple memory"
+                alt="Lembrança do casal"
                 className="w-full h-full object-cover grayscale"
               />
             </div>
@@ -90,13 +90,13 @@ export default function ValentinePopup({ onClose }: ValentinePopupProps) {
             className="font-display text-5xl md:text-7xl lg:text-8xl text-[#b00d1e] tracking-wide leading-tight"
             style={{ fontWeight: 500 }}
           >
-            валентинка
+            declaração de amor
           </h1>
           <h2
             className="font-display text-3xl md:text-4xl lg:text-5xl text-[#b00d1e] mt-2 tracking-widest uppercase"
             style={{ fontWeight: 500 }}
           >
-            любимому человеку
+            para a pessoa amada
           </h2>
         </div>
 
@@ -113,7 +113,7 @@ export default function ValentinePopup({ onClose }: ValentinePopupProps) {
               strokeWidth={0}
             />
             <span className="absolute inset-0 flex items-center justify-center text-[#f8dee2] font-body text-sm md:text-base tracking-wide">
-              Нажми
+              Toque
             </span>
           </div>
         </button>

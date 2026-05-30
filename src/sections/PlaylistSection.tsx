@@ -2,11 +2,11 @@ import { useEffect, useRef, useState } from 'react';
 import { Pause, Heart } from 'lucide-react';
 
 const tracks = [
-  { id: 1, title: 'Твои глаза', artist: 'Наша Любовь', duration: '3:14' },
-  { id: 2, title: 'Под небом вдвоём', artist: 'Лето с тобой', duration: '4:02' },
-  { id: 3, title: 'Моё сердце', artist: 'Ты и Я', duration: '3:48' },
-  { id: 4, title: 'Дорога домой', artist: 'Наши мечты', duration: '3:55' },
-  { id: 5, title: 'Навсегда', artist: 'Обещание', duration: '4:20' },
+  { id: 1, title: 'Seus olhos', artist: 'Nosso amor', duration: '3:14' },
+  { id: 2, title: 'Sob o céu a dois', artist: 'Verão com você', duration: '4:02' },
+  { id: 3, title: 'Meu coração', artist: 'Eu e você', duration: '3:48' },
+  { id: 4, title: 'Caminho para casa', artist: 'Nossos sonhos', duration: '3:55' },
+  { id: 5, title: 'Para sempre', artist: 'Promessa', duration: '4:20' },
 ];
 
 export default function PlaylistSection() {
@@ -58,10 +58,10 @@ export default function PlaylistSection() {
             className="font-display text-4xl md:text-5xl lg:text-6xl text-[#f8dee3]"
             style={{ fontWeight: 500 }}
           >
-            Наш плейлист
+            Nossa playlist
           </h2>
           <p className="mt-4 font-body text-sm md:text-base text-[#f8dee3]/70 max-w-lg mx-auto leading-relaxed">
-            Каждая песня — это мгновение, которое мы пережили вместе
+            Cada música é um momento que vivemos juntos
           </p>
         </div>
 

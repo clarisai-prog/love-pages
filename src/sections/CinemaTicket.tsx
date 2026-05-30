@@ -44,9 +44,9 @@ export default function CinemaTicket() {
             className="font-display text-4xl md:text-5xl lg:text-6xl text-[#b00d1e] leading-tight"
             style={{ fontWeight: 500 }}
           >
-            ты помнишь,
+            você lembra
             <br />
-            как всё началось?
+            como tudo começou?
           </h2>
         </div>
 
@@ -57,7 +57,7 @@ export default function CinemaTicket() {
           }`}
         >
           <p className="font-body text-sm text-[#b00d1e] tracking-wide">
-            Нажми на отрывную часть билета
+            Toque na parte destacável do ingresso
           </p>
           <div className="flex justify-center mt-2">
             <ArrowRight className="w-5 h-5 text-[#b00d1e] rotate-90 md:rotate-0" />
@@ -89,35 +89,35 @@ export default function CinemaTicket() {
                     className="font-display text-2xl md:text-3xl tracking-widest text-center"
                     style={{ fontWeight: 500 }}
                   >
-                    КИНОБИЛЕТ
+                    INGRESSO
                   </h3>
                 </div>
 
                 {/* Ticket fields */}
                 <div className="space-y-3 font-body text-sm">
                   <div className="flex justify-between">
-                    <span className="opacity-70">Дата:</span>
-                    <span>14 февраля 2024</span>
+                    <span className="opacity-70">Data:</span>
+                    <span>14 de fevereiro de 2024</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="opacity-70">Время:</span>
+                    <span className="opacity-70">Horário:</span>
                     <span>19:00</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="opacity-70">Фильм:</span>
-                    <span>Наша любовь</span>
+                    <span className="opacity-70">Filme:</span>
+                    <span>Nosso amor</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="opacity-70">Ряд:</span>
+                    <span className="opacity-70">Fileira:</span>
                     <span>1</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="opacity-70">Место:</span>
-                    <span>Рядом с тобой</span>
+                    <span className="opacity-70">Assento:</span>
+                    <span>Ao seu lado</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="opacity-70">Стоимость:</span>
-                    <span>Бесценно</span>
+                    <span className="opacity-70">Valor:</span>
+                    <span>Inestimável</span>
                   </div>
                 </div>
 
