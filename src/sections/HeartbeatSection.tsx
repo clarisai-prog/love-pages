@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import { Heart } from 'lucide-react';
 
 export default function HeartbeatSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -57,63 +56,39 @@ export default function HeartbeatSection() {
             className="font-display text-3xl md:text-5xl lg:text-6xl text-[#f8dee3] leading-tight mb-4"
             style={{ fontWeight: 500 }}
           >
-            assim bate meu coração,
+            celebrando mais um
             <br />
-            quando você está por perto
+            momento nosso
           </h2>
         </div>
 
-        {/* Heart with beat animation */}
+        {/* Time counter */}
         <div
           className={`mt-12 transition-all duration-1000 delay-500 ${
             isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-50'
           }`}
         >
-          <button
-            className="relative group"
-            onClick={() => {
-              // Create a burst effect
-              const hearts = Array.from({ length: 8 }).map((_, i) => {
-                const el = document.createElement('div');
-                el.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="#f8dee2"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>';
-                el.style.position = 'absolute';
-                el.style.left = '50%';
-                el.style.top = '50%';
-                el.style.pointerEvents = 'none';
-                el.style.transform = `rotate(${i * 45}deg)`;
-                el.animate([
-                  { transform: `rotate(${i * 45}deg) translateY(0) scale(1)`, opacity: 1 },
-                  { transform: `rotate(${i * 45}deg) translateY(-100px) scale(0)`, opacity: 0 },
-                ], {
-                  duration: 800,
-                  easing: 'ease-out',
-                });
-                return el;
-              });
-              const container = document.getElementById('heart-container');
-              hearts.forEach((h) => container?.appendChild(h));
-              setTimeout(() => hearts.forEach((h) => h.remove()), 800);
-            }}
-          >
-            <div id="heart-container" className="relative">
-              <Heart
-                className="w-32 h-32 md:w-44 md:h-44 text-[#f8dee3] fill-[#f8dee3] heartbeat transition-transform duration-300 group-hover:scale-110"
-                strokeWidth={0}
-              />
-            </div>
-            <span className="absolute inset-0 flex items-center justify-center text-[#c3505c] font-body text-sm tracking-wide opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              Нажми
-            </span>
-          </button>
+          <div className="relative inline-block">
+            <p
+              className="font-display text-4xl md:text-6xl lg:text-7xl text-[#f8dee3] leading-tight"
+              style={{ fontWeight: 500 }}
+            >
+              4 anos, 5 meses,
+              <br />
+              5 dias ao seu lado
+            </p>
+            {/* Decorative line */}
+            <div className="mt-4 mx-auto w-24 h-[1px] bg-[#f8dee3]/40" />
+          </div>
         </div>
 
-        {/* Instruction text */}
+        {/* Subtitle */}
         <p
-          className={`mt-8 font-body text-xs text-[#f8dee3]/60 tracking-wide transition-all duration-1000 delay-700 ${
+          className={`mt-8 font-body text-sm md:text-base text-[#f8dee3]/80 tracking-wide transition-all duration-1000 delay-700 ${
             isVisible ? 'opacity-100' : 'opacity-0'
           }`}
         >
-          Toque no coração
+          e eu sigo feliz por viver isso com você.
         </p>
       </div>
     </section>
