@@ -38,7 +38,7 @@ export default function ValentinePopup({ onClose }: ValentinePopupProps) {
           <div className="polaroid bg-white p-3 pb-10 shadow-lg">
             <div className="w-40 h-48 md:w-52 md:h-60 bg-gray-200 overflow-hidden">
               <img
-                src="/images/polaroid-left.jpg"
+                src="/images/popup/polaroid-left.jpg"
                 alt="Lembrança do casal"
                 className="w-full h-full object-cover grayscale"
               />
@@ -64,19 +64,17 @@ export default function ValentinePopup({ onClose }: ValentinePopupProps) {
           <div className="polaroid bg-white p-3 pb-10 shadow-lg">
             <div className="w-40 h-48 md:w-52 md:h-60 bg-gray-200 overflow-hidden">
               <img
-                src="/images/polaroid-right.jpg"
+                src="/images/popup/polaroid-right.jpg"
                 alt="Lembrança do casal"
                 className="w-full h-full object-cover grayscale"
               />
             </div>
           </div>
-          {/* Washi tape */}
-          <div
-            className="absolute -bottom-2 right-1/4 w-20 h-6 opacity-80"
-            style={{
-              background: 'repeating-linear-gradient(45deg, #f4a6b5 0px, #f4a6b5 4px, #e8889a 4px, #e8889a 5px)',
-              transform: 'rotate(20deg)',
-            }}
+          {/* Washi tape image */}
+          <img
+            src="/images/popup/washi-tape.png"
+            alt="Fita decorativa"
+            className="absolute -bottom-2 right-1/4 w-20 h-6 opacity-80 rotate-[20deg] object-cover pointer-events-none"
           />
         </div>
 

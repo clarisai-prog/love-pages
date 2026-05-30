@@ -39,7 +39,7 @@ export default function TravelSection() {
               {/* Main photo */}
               <div className="relative overflow-hidden rounded-sm shadow-2xl">
                 <img
-                  src="/images/travel.jpg"
+                  src="/images/travel/travel.jpg"
                   alt="Путешествия вместе"
                   className="w-full h-auto object-cover grayscale hover:grayscale-0 transition-all duration-700"
                 />

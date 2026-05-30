@@ -55,7 +55,7 @@ export default function BeforeWeMet() {
               <div className="bg-white p-4 shadow-xl rotate-[-2deg]">
                 <div className="relative overflow-hidden bg-[#f5f0e8]">
                   <img
-                    src="/images/childhood.jpg"
+                    src="/images/childhood/childhood.jpg"
                     alt="Наше детство"
                     className="w-full h-auto object-cover sepia-[0.3]"
                   />

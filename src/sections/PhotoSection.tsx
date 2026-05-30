@@ -31,7 +31,7 @@ export default function PhotoSection() {
         }`}
       >
         <img
-          src="/images/couple-main.jpg"
+          src="/images/hero/couple-main.jpg"
           alt="Nossa foto"
           className="w-full h-auto object-cover grayscale"
           style={{ maxHeight: '80vh' }}
