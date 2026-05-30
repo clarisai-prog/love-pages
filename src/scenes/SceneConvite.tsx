@@ -417,35 +417,39 @@ export default function SceneConvite({ onEnter }: SceneConviteProps) {
         </p>
       </div>
 
-      {/* Text: Para você */}
-      <p
-        ref={textParaVoceRef}
-        className="mt-8 font-display text-sm md:text-base text-[#c3505c] italic tracking-wide opacity-0"
-      >
-        Para você, com todo o meu amor
-      </p>
+      {!exploded && (
+        <>
+          {/* Text: Para você */}
+          <p
+            ref={textParaVoceRef}
+            className="mt-8 font-display text-sm md:text-base text-[#c3505c] italic tracking-wide opacity-0"
+          >
+            Para você, com todo o meu amor
+          </p>
 
-      {/* Text: Clica no meu coração */}
-      <p
-        ref={textClicaRef}
-        className="mt-4 font-display text-lg md:text-xl text-[#b00d1e] tracking-wide opacity-0"
-        style={{ fontWeight: 500 }}
-      >
-        Clica no meu coração
-      </p>
+          {/* Text: Clica no meu coração */}
+          <p
+            ref={textClicaRef}
+            className="mt-4 font-display text-lg md:text-xl text-[#b00d1e] tracking-wide opacity-0"
+            style={{ fontWeight: 500 }}
+          >
+            Clica no meu coração
+          </p>
 
-      {/* Seta animada apontando para o coração */}
-      <div ref={setaRef} className="mt-3 opacity-0">
-        <svg
-          className="w-8 h-8 text-[#b00d1e] animate-bounce"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={2.5}
-          viewBox="0 0 24 24"
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M12 5v14m0 0l-6-6m6 6l6-6" />
-        </svg>
-      </div>
+          {/* Seta animada apontando para o coração */}
+          <div ref={setaRef} className="mt-3 opacity-0">
+            <svg
+              className="w-8 h-8 text-[#b00d1e] animate-bounce"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2.5}
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 5v14m0 0l-6-6m6 6l6-6" />
+            </svg>
+          </div>
+        </>
+      )}
 
       {/* Typewriter text (appears after explosion) */}
       {exploded && (

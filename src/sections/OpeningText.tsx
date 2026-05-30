@@ -12,7 +12,7 @@ export default function OpeningText() {
           observer.disconnect();
         }
       },
-      { threshold: 0.3 }
+      { threshold: 0.2 }
     );
 
     if (sectionRef.current) {
@@ -25,7 +25,7 @@ export default function OpeningText() {
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-screen flex items-center justify-center bg-[#c3505c]"
+      className="relative min-h-screen flex items-center justify-center bg-[#c3505c] overflow-hidden"
     >
       {/* Decorative corner element */}
       <div className="absolute top-8 right-8 w-16 h-16 opacity-60">
@@ -38,7 +38,56 @@ export default function OpeningText() {
         </svg>
       </div>
 
-      <div className="text-center px-6 max-w-2xl mx-auto">
+      {/* Left Polaroid */}
+      <div
+        className={`absolute left-[3%] md:left-[8%] top-[10%] md:top-[15%] transition-all duration-1000 delay-500 ${
+          isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+        }`}
+        style={{ transform: `rotate(-8deg) ${isVisible ? '' : 'translateY(30px)'}` }}
+      >
+        <div className="bg-white p-3 pb-10 shadow-lg">
+          <div className="w-32 h-40 md:w-44 md:h-56 bg-gray-200 overflow-hidden">
+            <img
+              src="/images/popup/polaroid-left.jpg"
+              alt="Lembrança do casal"
+              className="w-full h-full object-cover grayscale"
+            />
+          </div>
+        </div>
+        {/* Washi tape */}
+        <img
+          src="/images/popup/washi-tape.png"
+          alt="Fita decorativa"
+          className="absolute -top-3 left-1/2 -translate-x-1/2 w-16 md:w-20 h-5 md:h-6 opacity-80 rotate-[-15deg] object-cover pointer-events-none"
+        />
+      </div>
+
+      {/* Right Polaroid */}
+      <div
+        className={`absolute right-[3%] md:right-[8%] bottom-[10%] md:bottom-[15%] transition-all duration-1000 delay-700 ${
+          isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+        }`}
+        style={{ transform: `rotate(6deg) ${isVisible ? '' : 'translateY(30px)'}` }}
+      >
+        <div className="bg-white p-3 pb-10 shadow-lg">
+          <div className="w-32 h-40 md:w-44 md:h-56 bg-gray-200 overflow-hidden">
+            <img
+              src="/images/popup/polaroid-right.jpg"
+              alt="Lembrança do casal"
+              className="w-full h-full object-cover grayscale"
+            />
+          </div>
+        </div>
+        {/* Washi tape */}
+        <img
+          src="/images/popup/washi-tape.png"
+          alt="Fita decorativa"
+          className="absolute -bottom-2 right-1/4 w-16 md:w-20 h-5 md:h-6 opacity-80 rotate-[20deg] object-cover pointer-events-none"
+        />
+      </div>
+
+      {/* Central Text */}
+      <div className="text-center px-6 max-w-2xl mx-auto z-10">
         <p
           className={`font-display text-2xl md:text-3xl lg:text-4xl text-[#f8dee3] leading-relaxed tracking-wide transition-all duration-1000 ${
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
@@ -52,7 +101,7 @@ export default function OpeningText() {
       </div>
 
       {/* Scroll indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce z-10">
         <svg
           className="w-6 h-6 text-[#f8dee3] opacity-60"
           fill="none"
