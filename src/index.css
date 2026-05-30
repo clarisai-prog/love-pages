@@ -241,4 +241,50 @@
   .eq-bar {
     animation: eqBar 0.5s ease-in-out infinite alternate;
   }
+
+  /* Heart opening animation */
+  @keyframes heartOpen {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+      filter: brightness(1);
+    }
+    30% {
+      transform: scale(1.15);
+      opacity: 1;
+      filter: brightness(1.3);
+    }
+    60% {
+      transform: scale(1.4);
+      opacity: 0.6;
+      filter: brightness(1.5);
+    }
+    100% {
+      transform: scale(2);
+      opacity: 0;
+      filter: brightness(2);
+    }
+  }
+
+  .heart-opening {
+    animation: heartOpen 0.8s ease-out forwards;
+  }
+
+  /* Mini heart burst */
+  @keyframes miniHeartBurst {
+    0% {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1;
+    }
+    100% {
+      transform: translate(var(--tx), var(--ty)) scale(0);
+      opacity: 0;
+    }
+  }
+
+  .mini-heart {
+    position: absolute;
+    pointer-events: none;
+    animation: miniHeartBurst 0.9s ease-out forwards;
+  }
 }
