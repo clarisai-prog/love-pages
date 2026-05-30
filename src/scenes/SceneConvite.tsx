@@ -343,10 +343,10 @@ export default function SceneConvite({ onEnter }: SceneConviteProps) {
       });
     }
 
-    // Show main content
+    // Show main content after typewriter completes (~4.2s) + reading time
     setTimeout(() => {
       onEnter();
-    }, 1500);
+    }, 6000);
   };
 
   // Typewriter effect for the Opening Text (after transition)
@@ -434,16 +434,16 @@ export default function SceneConvite({ onEnter }: SceneConviteProps) {
         Clica no meu coração
       </p>
 
-      {/* Seta animada */}
-      <div ref={setaRef} className="mt-2 opacity-0">
+      {/* Seta animada apontando para o coração */}
+      <div ref={setaRef} className="mt-3 opacity-0">
         <svg
-          className="w-6 h-6 text-[#c3505c] animate-bounce"
+          className="w-8 h-8 text-[#b00d1e] animate-bounce"
           fill="none"
           stroke="currentColor"
-          strokeWidth={2}
+          strokeWidth={2.5}
           viewBox="0 0 24 24"
         >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M12 5v14m0 0l-6-6m6 6l6-6" />
         </svg>
       </div>
 
