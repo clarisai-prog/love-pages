@@ -44,13 +44,11 @@ export default function ValentinePopup({ onClose }: ValentinePopupProps) {
               />
             </div>
           </div>
-          {/* Washi tape */}
-          <div
-            className="absolute -top-3 left-1/2 -translate-x-1/2 w-20 h-6 opacity-80"
-            style={{
-              background: 'repeating-linear-gradient(45deg, #f4a6b5 0px, #f4a6b5 4px, #e8889a 4px, #e8889a 5px)',
-              transform: 'rotate(-15deg)',
-            }}
+          {/* Washi tape image */}
+          <img
+            src="/images/popup/washi-tape.png"
+            alt="Fita decorativa"
+            className="absolute -top-3 left-1/2 -translate-x-1/2 w-20 h-6 opacity-80 rotate-[-15deg] object-cover pointer-events-none"
           />
         </div>
 
