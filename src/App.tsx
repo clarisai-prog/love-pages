@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react';
-import LoadingScreen from './sections/LoadingScreen';
-import ValentinePopup from './sections/ValentinePopup';
+import { useState } from 'react';
+import SceneConvite from './scenes/SceneConvite';
 import OpeningText from './sections/OpeningText';
 import PhotoSection from './sections/PhotoSection';
 import CinemaTicket from './sections/CinemaTicket';
@@ -13,21 +12,10 @@ import ThankYouSection from './sections/ThankYouSection';
 import NoiseOverlay from './components/NoiseOverlay';
 
 function App() {
-  const [isLoading, setIsLoading] = useState(true);
-  const [showPopup, setShowPopup] = useState(false);
+  const [entered, setEntered] = useState(false);
 
-  useEffect(() => {
-    if (!isLoading) {
-      setShowPopup(true);
-    }
-  }, [isLoading]);
-
-  const handleLoadingComplete = () => {
-    setIsLoading(false);
-  };
-
-  const handlePopupClose = () => {
-    setShowPopup(false);
+  const handleEnter = () => {
+    setEntered(true);
   };
 
   return (
@@ -35,16 +23,11 @@ function App() {
       {/* Noise texture overlay */}
       <NoiseOverlay />
 
-      {/* Loading Screen */}
-      {isLoading && <LoadingScreen onComplete={handleLoadingComplete} />}
+      {/* Capítulo 1: O Convite */}
+      {!entered && <SceneConvite onEnter={handleEnter} />}
 
-      {/* Valentine Popup */}
-      {showPopup && !isLoading && (
-        <ValentinePopup onClose={handlePopupClose} />
-      )}
-
-      {/* Main Content */}
-      {!isLoading && (
+      {/* Main Content - aparece após o convite ser aceito */}
+      {entered && (
         <main className="relative">
           <OpeningText />
           <PhotoSection />
