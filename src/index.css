@@ -1,0 +1,244 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Valentine Page Color Palette */
+    --color-pink-bg: #f8dee2;
+    --color-pink-light: #f8dee3;
+    --color-red-dark: #b00d1e;
+    --color-red-warm: #c3505c;
+    --color-white: #ffffff;
+
+    /* Font Families */
+    --font-display: 'Cormorant Garamond', Georgia, serif;
+    --font-body: 'Arial', Helvetica, sans-serif;
+
+    /* shadcn variables */
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 5.9% 10%;
+    --radius: 0.625rem;
+
+    --app-height: 100%;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    font-family: var(--font-body);
+    background-color: var(--color-pink-bg);
+    color: var(--color-red-dark);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer components {
+  /* Noise overlay effect */
+  .page-noise {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    height: var(--app-height);
+    background-image: url('/noise-texture.jpg');
+    background-size: 1200px;
+    opacity: 0.1;
+    pointer-events: none;
+    z-index: 9999;
+    mix-blend-mode: normal;
+  }
+
+  /* Font display class */
+  .font-display {
+    font-family: var(--font-display);
+  }
+
+  .font-body {
+    font-family: var(--font-body);
+  }
+
+  /* Torn paper edge effect */
+  .torn-edge-bottom {
+    position: relative;
+  }
+  .torn-edge-bottom::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 40px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 40' preserveAspectRatio='none'%3E%3Cpath d='M0,0 Q30,25 60,8 T120,15 T180,5 T240,20 T300,10 T360,18 T420,6 T480,22 T540,12 T600,8 T660,20 T720,5 T780,15 T840,10 T900,25 T960,8 T1020,18 T1080,6 T1140,20 T1200,10 L1200,40 L0,40 Z' fill='%23f8dee2'/%3E%3C/svg%3E");
+    background-size: 1200px 40px;
+    background-repeat: repeat-x;
+    z-index: 2;
+  }
+
+  .torn-edge-top {
+    position: relative;
+  }
+  .torn-edge-top::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: 0;
+    right: 0;
+    height: 40px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 40' preserveAspectRatio='none'%3E%3Cpath d='M0,40 Q30,15 60,32 T120,25 T180,35 T240,20 T300,30 T360,22 T420,34 T480,18 T540,28 T600,32 T660,20 T720,35 T780,25 T840,30 T900,15 T960,32 T1020,22 T1080,34 T1140,20 T1200,30 L1200,0 L0,0 Z' fill='%23f8dee2'/%3E%3C/svg%3E");
+    background-size: 1200px 40px;
+    background-repeat: repeat-x;
+    z-index: 2;
+  }
+
+  /* Polaroid frame effect */
+  .polaroid {
+    background: white;
+    padding: 12px 12px 40px 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    transform: rotate(-3deg);
+    transition: transform 0.3s ease;
+  }
+  .polaroid:hover {
+    transform: rotate(0deg) scale(1.02);
+  }
+
+  /* Washi tape decoration */
+  .washi-tape {
+    position: absolute;
+    width: 80px;
+    height: 24px;
+    background: repeating-linear-gradient(
+      45deg,
+      #f8dee2,
+      #f8dee2 5px,
+      #e8a0b0 5px,
+      #e8a0b0 6px
+    );
+    opacity: 0.85;
+    z-index: 10;
+  }
+
+  /* Heartbeat animation */
+  @keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    14% { transform: scale(1.08); }
+    28% { transform: scale(1); }
+    42% { transform: scale(1.05); }
+    70% { transform: scale(1); }
+  }
+
+  .heartbeat {
+    animation: heartbeat 2.4s infinite ease-in-out;
+  }
+
+  /* Gentle sway animation */
+  @keyframes sway {
+    0%, 100% { transform: rotate(-2deg); }
+    50% { transform: rotate(2deg); }
+  }
+
+  .sway {
+    animation: sway 3s infinite ease-in-out;
+  }
+
+  /* Slow rotation */
+  @keyframes slow-rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .slow-rotate {
+    animation: slow-rotate 12s infinite linear;
+  }
+
+  /* Fade in up animation */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .fade-in-up {
+    animation: fadeInUp 0.8s ease-out forwards;
+  }
+
+  /* Loading pulse */
+  @keyframes loadingPulse {
+    0%, 100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    20% {
+      opacity: 1;
+      transform: scale(1.06);
+    }
+    40% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    60% {
+      opacity: 1;
+      transform: scale(1.06);
+    }
+    80% {
+      opacity: 0.5;
+      transform: scale(1);
+    }
+  }
+
+  .loading-pulse {
+    animation: loadingPulse 3s ease-in-out forwards;
+  }
+
+  /* Vinyl spin animation */
+  @keyframes vinylSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .vinyl-spin {
+    animation: vinylSpin 3s linear infinite;
+  }
+
+  /* Equalizer bar animation */
+  @keyframes eqBar {
+    0% { height: 15%; }
+    100% { height: 100%; }
+  }
+
+  .eq-bar {
+    animation: eqBar 0.5s ease-in-out infinite alternate;
+  }
+}
