@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import { Heart } from 'lucide-react';
 
 interface ValentinePopupProps {
@@ -8,35 +8,22 @@ interface ValentinePopupProps {
 export default function ValentinePopup({ onClose }: ValentinePopupProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
-  const [isOpening, setIsOpening] = useState(false);
-  const [showMinis, setShowMinis] = useState(false);
-  const heartRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    requestAnimationFrame(() => setIsVisible(true));
+    // Trigger entrance animation
+    requestAnimationFrame(() => {
+      setIsVisible(true);
+    });
   }, []);
 
-  const handleClose = useCallback(() => {
-    if (isClosing) return;
+  const handleClose = () => {
     setIsClosing(true);
-    setTimeout(onClose, 800);
-  }, [isClosing, onClose]);
-
-  const handleHeartClick = () => {
-    if (isOpening) return;
-    setIsOpening(true);
-    setShowMinis(true);
-
-    // Fade out mini hearts after animation
-    setTimeout(() => setShowMinis(false), 1000);
-
-    // Close popup after heart fully opens and dissolves
-    setTimeout(handleClose, 1200);
+    setTimeout(onClose, 500);
   };
 
   return (
     <div
-      className={`fixed inset-0 z-[100000] flex items-center justify-center bg-[#f8dee2] transition-all duration-700 ${
+      className={`fixed inset-0 z-[100000] flex items-center justify-center bg-[#f8dee2] transition-all duration-500 ${
         isVisible && !isClosing ? 'opacity-100' : 'opacity-0 pointer-events-none'
       }`}
     >
@@ -57,6 +44,7 @@ export default function ValentinePopup({ onClose }: ValentinePopupProps) {
               />
             </div>
           </div>
+          {/* Washi tape image */}
           <img
             src="/images/popup/washi-tape.png"
             alt="Fita decorativa"
@@ -80,6 +68,7 @@ export default function ValentinePopup({ onClose }: ValentinePopupProps) {
               />
             </div>
           </div>
+          {/* Washi tape image */}
           <img
             src="/images/popup/washi-tape.png"
             alt="Fita decorativa"
@@ -109,76 +98,21 @@ export default function ValentinePopup({ onClose }: ValentinePopupProps) {
 
         {/* Heart Button */}
         <button
-          ref={heartRef}
-          onClick={handleHeartClick}
-          disabled={isOpening}
+          onClick={handleClose}
           className={`mt-12 relative z-10 group transition-all duration-700 delay-700 ${
             isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-50'
           }`}
         >
           <div className="relative">
-            {/* Main heart */}
-            <div
-              className={`heart-growth ${isOpening ? 'is-opening' : ''}`}
-              style={{
-                position: 'fixed',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%) scale(1)',
-                zIndex: 100001,
-                pointerEvents: 'none',
-                opacity: isOpening ? undefined : 1,
-              }}
-            >
-              <Heart
-                className={`w-32 h-32 md:w-40 md:h-40 text-[#c3505c] fill-[#c3505c] transition-transform duration-300 group-hover:scale-110 ${
-                  isOpening ? '' : ''
-                }`}
-                strokeWidth={0}
-                style={{
-                  filter: 'drop-shadow(0 20px 60px rgba(195, 80, 92, 0.3))',
-                }}
-              />
-            </div>
-
-            {/* Text "Toque" */}
-            <span
-              className={`absolute inset-0 flex items-center justify-center text-[#f8dee2] font-body text-sm md:text-base tracking-wide transition-opacity duration-300 pointer-events-none ${
-                isOpening ? 'opacity-0' : 'opacity-100'
-              }`}
-            >
+            <Heart
+              className="w-32 h-32 md:w-40 md:h-40 text-[#c3505c] fill-[#c3505c] transition-transform duration-300 group-hover:scale-110"
+              strokeWidth={0}
+            />
+            <span className="absolute inset-0 flex items-center justify-center text-[#f8dee2] font-body text-sm md:text-base tracking-wide">
               Toque
             </span>
           </div>
         </button>
-
-        {/* Mini hearts — explode when clicked */}
-        {showMinis && (
-          <div className="fixed inset-0 z-[99999] pointer-events-none">
-            {Array.from({ length: 14 }).map((_, i) => {
-              const angle = (i / 14) * 360;
-              const rad = (angle * Math.PI) / 180;
-              const distance = 60 + Math.random() * 100;
-              const tx = Math.cos(rad) * distance;
-              const ty = Math.sin(rad) * distance;
-              const delay = Math.random() * 0.15;
-
-              return (
-                <div
-                  key={i}
-                  className="absolute top-1/2 left-1/2"
-                  style={{
-                    animation: `miniHeartBurst 0.9s ease-out ${delay}s forwards`,
-                    '--tx': `${tx}px`,
-                    '--ty': `${ty}px`,
-                  } as React.CSSProperties}
-                >
-                  <Heart className="w-4 h-4 text-[#c3505c] fill-[#c3505c]" strokeWidth={0} />
-                </div>
-              );
-            })}
-          </div>
-        )}
       </div>
     </div>
   );
