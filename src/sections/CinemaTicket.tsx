@@ -5,6 +5,7 @@ export default function CinemaTicket() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
   const [isRevealed, setIsRevealed] = useState(false);
+  const audioCtxRef = useRef<AudioContext | null>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -24,16 +25,74 @@ export default function CinemaTicket() {
     return () => observer.disconnect();
   }, []);
 
+  // Init audio on user interaction
+  const initAudio = () => {
+    if (!audioCtxRef.current) {
+      const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+      audioCtxRef.current = new AudioContext();
+    }
+    if (audioCtxRef.current.state === 'suspended') {
+      audioCtxRef.current.resume();
+    }
+  };
+
+  // Paper tear sound
+  const playTearSound = () => {
+    const ctx = audioCtxRef.current;
+    if (!ctx) return;
+    const t = ctx.currentTime;
+
+    // White noise burst for tear
+    const bufferSize = ctx.sampleRate * 0.4;
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      const env = Math.exp(-i / (bufferSize * 0.15));
+      data[i] = (Math.random() * 2 - 1) * env * 0.3;
+    }
+    const source = ctx.createBufferSource();
+    source.buffer = buffer;
+
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.2, t);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
+
+    // Lowpass filter for paper texture
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(3000, t);
+    filter.frequency.linearRampToValueAtTime(800, t + 0.3);
+
+    source.connect(filter);
+    filter.connect(gain);
+    gain.connect(ctx.destination);
+    source.start(t);
+    source.stop(t + 0.5);
+  };
+
   const handleTicketClick = () => {
+    initAudio();
+    playTearSound();
     setIsRevealed(!isRevealed);
   };
 
   return (
     <section
       ref={sectionRef}
-      className="relative bg-[#f8dee2] py-20 md:py-32 overflow-hidden"
+      className="relative py-20 md:py-32 overflow-hidden"
+      style={{ backgroundColor: '#f8dee2' }}
     >
-      <div className="max-w-5xl mx-auto px-6">
+      {/* Paper texture overlay */}
+      <div
+        className="fixed inset-0 pointer-events-none opacity-[0.04]"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
+          backgroundSize: '200px 200px',
+          mixBlendMode: 'multiply',
+        }}
+      />
+
+      <div className="max-w-5xl mx-auto px-6 relative z-10">
         {/* Title */}
         <div
           className={`text-center mb-16 transition-all duration-1000 ${
@@ -82,42 +141,68 @@ export default function CinemaTicket() {
               }`}
             >
               {/* Main ticket part */}
-              <div className="relative bg-[#c3505c] text-[#f8dee2] px-8 py-8 md:px-12 md:py-10 w-64 md:w-80">
+              <div
+                className="relative text-[#f8dee2] px-8 py-8 md:px-12 md:py-10 w-64 md:w-80"
+                style={{
+                  backgroundColor: '#c3505c',
+                  boxShadow: '0 1px 1px rgba(0,0,0,0.12), 0 2px 2px rgba(0,0,0,0.12), 0 4px 4px rgba(0,0,0,0.12), 0 8px 8px rgba(0,0,0,0.12), 0 16px 16px rgba(0,0,0,0.12)',
+                }}
+              >
+                {/* Ticket texture overlay */}
+                <div
+                  className="absolute inset-0 pointer-events-none opacity-[0.06]"
+                  style={{
+                    backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
+                    backgroundSize: '100px 100px',
+                    mixBlendMode: 'multiply',
+                  }}
+                />
+
                 {/* Ticket header */}
-                <div className="border-b border-[#f8dee2]/30 pb-4 mb-4">
+                <div className="border-b border-[#f8dee2]/30 pb-4 mb-4 relative z-10">
                   <h3
-                    className="font-display text-2xl md:text-3xl tracking-widest text-center"
-                    style={{ fontWeight: 500 }}
+                    className="font-mono text-xl md:text-2xl tracking-[0.2em] text-center uppercase"
+                    style={{ fontWeight: 600 }}
                   >
-                    INGRESSO
+                    ADMIT ONE
                   </h3>
+                  <p className="text-center font-mono text-[10px] tracking-widest opacity-60 mt-1">
+                    NO REFUNDS • NO EXCHANGES
+                  </p>
                 </div>
 
                 {/* Ticket fields */}
-                <div className="space-y-3 font-body text-sm">
+                <div className="space-y-3 font-mono text-xs md:text-sm relative z-10">
                   <div className="flex justify-between">
-                    <span className="opacity-70">Data:</span>
-                    <span>14 de fevereiro de 2024</span>
+                    <span className="opacity-60">DATE:</span>
+                    <span className="tracking-wide">14 FEB 2024</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="opacity-70">Horário:</span>
-                    <span>19:00</span>
+                    <span className="opacity-60">TIME:</span>
+                    <span className="tracking-wide">19:00</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="opacity-70">Filme:</span>
-                    <span>Nosso amor</span>
+                    <span className="opacity-60">MOVIE:</span>
+                    <span className="tracking-wide">NOSSO AMOR</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="opacity-70">Fileira:</span>
-                    <span>1</span>
+                    <span className="opacity-60">ROW:</span>
+                    <span className="tracking-wide">1</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="opacity-70">Assento:</span>
-                    <span>Ao seu lado</span>
+                    <span className="opacity-60">SEAT:</span>
+                    <span className="tracking-wide">AO SEU LADO</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="opacity-70">Valor:</span>
-                    <span>Inestimável</span>
+                    <span className="opacity-60">PRICE:</span>
+                    <span className="tracking-wide">INESTIMÁVEL</span>
+                  </div>
+
+                  {/* Serial number */}
+                  <div className="pt-3 border-t border-[#f8dee2]/20">
+                    <p className="text-[9px] tracking-[0.3em] opacity-40 text-center">
+                      S/N 0013-0214-2024-∞
+                    </p>
                   </div>
                 </div>
 
@@ -127,23 +212,48 @@ export default function CinemaTicket() {
 
               {/* Tear-off stub */}
               <div
-                className={`relative bg-[#c3505c] border-l-2 border-dashed border-[#f8dee2]/50 px-4 py-8 md:px-6 md:py-10 w-20 md:w-24 flex flex-col items-center justify-center transition-all duration-700 ${
+                className={`relative border-l-2 border-dashed border-[#f8dee2]/50 px-4 py-8 md:px-6 md:py-10 w-20 md:w-24 flex flex-col items-center justify-center transition-all duration-700 ${
                   isRevealed ? '-translate-x-2 rotate-[-5deg]' : ''
                 }`}
+                style={{
+                  backgroundColor: '#c3505c',
+                  boxShadow: '0 1px 1px rgba(0,0,0,0.12), 0 2px 2px rgba(0,0,0,0.12), 0 4px 4px rgba(0,0,0,0.12)',
+                }}
               >
-                {/* Barcode lines */}
-                <div className="flex gap-[2px] h-24 md:h-32">
-                  {Array.from({ length: 20 }).map((_, i) => (
-                    <div
-                      key={i}
-                      className="bg-[#f8dee2] w-[2px]"
-                      style={{
-                        height: `${40 + Math.random() * 60}%`,
-                        opacity: 0.7,
-                      }}
-                    />
-                  ))}
+                {/* Stub texture */}
+                <div
+                  className="absolute inset-0 pointer-events-none opacity-[0.06]"
+                  style={{
+                    backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
+                    backgroundSize: '100px 100px',
+                    mixBlendMode: 'multiply',
+                  }}
+                />
+
+                {/* Barcode lines — more realistic */}
+                <div className="flex gap-[2px] h-24 md:h-32 relative z-10">
+                  {Array.from({ length: 24 }).map((_, i) => {
+                    const widths = [2, 1, 3, 1, 2, 4, 1, 2, 3, 1, 2, 1, 3, 2, 1, 4, 2, 1, 3, 1, 2, 3, 1, 2];
+                    return (
+                      <div
+                        key={i}
+                        className="bg-[#f8dee2]"
+                        style={{
+                          width: `${widths[i]}px`,
+                          height: `${35 + Math.random() * 55}%`,
+                          opacity: 0.75,
+                          marginRight: i % 3 === 0 ? '1px' : '0px',
+                        }}
+                      />
+                    );
+                  })}
                 </div>
+
+                <p className="mt-3 font-mono text-[8px] tracking-widest opacity-50 text-center relative z-10">
+                  TEAR
+                  <br />
+                  HERE
+                </p>
 
                 {/* Decorative corner cuts */}
                 <div className="absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-[#f8dee2] rounded-full" />
