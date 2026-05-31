@@ -38,7 +38,7 @@ export default function ValentinePopup({ onClose }: ValentinePopupProps) {
           <div className="polaroid bg-white p-3 pb-10 shadow-lg">
             <div className="w-40 h-48 md:w-52 md:h-60 bg-gray-200 overflow-hidden">
               <img
-                src="/images/popup/polaroid-left.jpg"
+                src="images/popup/polaroid-left.jpg"
                 alt="Lembrança do casal"
                 className="w-full h-full object-cover grayscale"
               />
@@ -46,7 +46,7 @@ export default function ValentinePopup({ onClose }: ValentinePopupProps) {
           </div>
           {/* Washi tape image */}
           <img
-            src="/images/popup/washi-tape.png"
+            src="images/popup/washi-tape.png"
             alt="Fita decorativa"
             className="absolute -top-3 left-1/2 -translate-x-1/2 w-20 h-6 opacity-80 rotate-[-15deg] object-cover pointer-events-none"
           />
@@ -62,7 +62,7 @@ export default function ValentinePopup({ onClose }: ValentinePopupProps) {
           <div className="polaroid bg-white p-3 pb-10 shadow-lg">
             <div className="w-40 h-48 md:w-52 md:h-60 bg-gray-200 overflow-hidden">
               <img
-                src="/images/popup/polaroid-right.jpg"
+                src="images/popup/polaroid-right.jpg"
                 alt="Lembrança do casal"
                 className="w-full h-full object-cover grayscale"
               />
@@ -70,7 +70,7 @@ export default function ValentinePopup({ onClose }: ValentinePopupProps) {
           </div>
           {/* Washi tape image */}
           <img
-            src="/images/popup/washi-tape.png"
+            src="images/popup/washi-tape.png"
             alt="Fita decorativa"
             className="absolute -bottom-2 right-1/4 w-20 h-6 opacity-80 rotate-[20deg] object-cover pointer-events-none"
           />

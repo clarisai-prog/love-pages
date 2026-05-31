@@ -3,25 +3,25 @@ import { useEffect, useRef, useState } from 'react';
 const moments = [
   {
     id: 1,
-    image: '/images/gallery/moment-1.jpg',
+    image: 'images/gallery/moment-1.jpg',
     caption: 'Piquenique no parque',
     rotation: -6,
   },
   {
     id: 2,
-    image: '/images/gallery/moment-2.jpg',
+    image: 'images/gallery/moment-2.jpg',
     caption: 'Pôr do sol na praia',
     rotation: 4,
   },
   {
     id: 3,
-    image: '/images/gallery/moment-3.jpg',
+    image: 'images/gallery/moment-3.jpg',
     caption: 'Jantar juntos',
     rotation: -3,
   },
   {
     id: 4,
-    image: '/images/gallery/moment-4.jpg',
+    image: 'images/gallery/moment-4.jpg',
     caption: 'Café na Europa',
     rotation: 5,
   },

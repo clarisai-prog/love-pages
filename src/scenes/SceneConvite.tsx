@@ -276,13 +276,8 @@ export default function SceneConvite({ onEnter }: SceneConviteProps) {
       );
     }
 
-    // Start audio
-    setTimeout(() => {
-      initAudio();
-      playVinylCrackle();
-      playHeartbeat(60);
-      playAmbientPiano();
-    }, 500);
+    // Audio iniciado apenas após interação do usuário (clique no coração)
+    // para respeitar a política de autoplay dos browsers
 
     return () => {
       tl.kill();
@@ -308,6 +303,9 @@ export default function SceneConvite({ onEnter }: SceneConviteProps) {
     if (exploded) return;
     initAudio();
     playClickSound();
+    playVinylCrackle();
+    playHeartbeat(60);
+    playAmbientPiano();
     setExploded(true);
 
     // Explode particles

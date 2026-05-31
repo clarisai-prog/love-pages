@@ -48,7 +48,7 @@ export default function OpeningText() {
         <div className="bg-white p-3 pb-10 shadow-lg">
           <div className="w-32 h-40 md:w-44 md:h-56 bg-gray-200 overflow-hidden">
             <img
-              src="/images/popup/polaroid-left.jpg"
+              src="images/popup/polaroid-left.jpg"
               alt="Lembrança do casal"
               className="w-full h-full object-cover grayscale"
             />
@@ -56,7 +56,7 @@ export default function OpeningText() {
         </div>
         {/* Washi tape */}
         <img
-          src="/images/popup/washi-tape.png"
+          src="images/popup/washi-tape.png"
           alt="Fita decorativa"
           className="absolute -top-3 left-1/2 -translate-x-1/2 w-16 md:w-20 h-5 md:h-6 opacity-80 rotate-[-15deg] object-cover pointer-events-none"
         />
@@ -72,7 +72,7 @@ export default function OpeningText() {
         <div className="bg-white p-3 pb-10 shadow-lg">
           <div className="w-32 h-40 md:w-44 md:h-56 bg-gray-200 overflow-hidden">
             <img
-              src="/images/popup/polaroid-right.jpg"
+              src="images/popup/polaroid-right.jpg"
               alt="Lembrança do casal"
               className="w-full h-full object-cover grayscale"
             />
@@ -80,7 +80,7 @@ export default function OpeningText() {
         </div>
         {/* Washi tape */}
         <img
-          src="/images/popup/washi-tape.png"
+          src="images/popup/washi-tape.png"
           alt="Fita decorativa"
           className="absolute -bottom-2 right-1/4 w-16 md:w-20 h-5 md:h-6 opacity-80 rotate-[20deg] object-cover pointer-events-none"
         />
@@ -120,7 +120,7 @@ export default function OpeningText() {
       {/* Torn paper bottom edge - image overlay */}
       <div className="absolute bottom-0 left-0 right-0 z-20 pointer-events-none">
         <img
-          src="/images/efeito-papel-1.webp"
+          src="images/efeito-papel-1.webp"
           alt=""
           className="w-full h-16 md:h-24 object-cover object-top"
           style={{ mixBlendMode: 'normal' }}
