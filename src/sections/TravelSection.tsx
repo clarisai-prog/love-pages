@@ -45,12 +45,11 @@ export default function TravelSection() {
                 />
               </div>
 
-              {/* Decorative tape */}
-              <div
-                className="absolute -top-3 left-8 w-24 h-7 opacity-80 rotate-[-8deg]"
-                style={{
-                  background: 'repeating-linear-gradient(45deg, #f4a6b5 0px, #f4a6b5 5px, #e8889a 5px, #e8889a 6px)',
-                }}
+              {/* Decorative washi tape */}
+              <img
+                src="images/popup/washi-tape.png"
+                alt=""
+                className="absolute -top-3 left-8 w-24 h-7 opacity-80 rotate-[-8deg] object-cover pointer-events-none"
               />
 
               {/* Shadow */}

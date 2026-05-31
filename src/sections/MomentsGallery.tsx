@@ -129,6 +129,15 @@ export default function MomentsGallery() {
           </svg>
         </div>
       </div>
+
+      {/* Torn paper bottom edge */}
+      <div className="absolute bottom-0 left-0 right-0 z-20 pointer-events-none">
+        <img
+          src="images/efeito-papel-1.webp"
+          alt=""
+          className="w-full h-16 md:h-24 object-cover object-top"
+        />
+      </div>
     </section>
   );
 }

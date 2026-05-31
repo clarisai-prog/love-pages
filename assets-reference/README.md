@@ -56,7 +56,9 @@ Este documento serve como **fonte única de verdade** para todos os assets visua
 ---
 
 ### `popup/washi-tape.png` *(formato: WebP)*
-- **Onde usar:** `OpeningText.tsx` — Fita decorativa nas duas polaroids
+- **Onde usar:** 
+  - `OpeningText.tsx` — Fita decorativa nas duas polaroids
+  - `TravelSection.tsx` — Fita decorativa no topo da foto de viagem
 - **Dimensões atuais:** *(formato WebP — dimensões visuais ~80×24px)*
 - **Proporção recomendada:** ~4:1 (retangular horizontal)
 - **Tamanho ideal:** 160×40px ou maior
@@ -71,7 +73,9 @@ Este documento serve como **fonte única de verdade** para todos os assets visua
 ---
 
 ### `efeito-papel-1.webp`
-- **Onde usar:** `OpeningText.tsx` — Borda de papel rasgado na base da seção vermelha
+- **Onde usar:** 
+  - `OpeningText.tsx` — Borda de papel rasgado na base da seção vermelha
+  - `MomentsGallery.tsx` — Borda de papel rasgado na base da galeria de polaroids
 - **Dimensões atuais:** *(WebP — usado em largura total)*
 - **Proporção recomendada:** ~10:1 a 15:1 (faixa horizontal muito larga e baixa)
 - **Tamanho ideal:** 1440×100px ou maior (será esticado em `object-cover`)
@@ -176,8 +180,8 @@ Este documento serve como **fonte única de verdade** para todos os assets visua
 |---|---------|------------------|-----------------|--------|
 | 1 | `popup/polaroid-left.jpg` | OpeningText — Polaroid esquerda | 864×1184px | ✅ |
 | 2 | `popup/polaroid-right.jpg` | OpeningText — Polaroid direita | 864×1184px | ✅ |
-| 3 | `popup/washi-tape.png` | OpeningText — Fita decorativa | *(WebP)* | ✅ |
-| 4 | `efeito-papel-1.webp` | OpeningText — Borda rasgada | *(WebP)* | ✅ |
+| 3 | `popup/washi-tape.png` | OpeningText + TravelSection — Fita decorativa | *(WebP)* | ✅ |
+| 4 | `efeito-papel-1.webp` | OpeningText + MomentsGallery — Borda rasgada | *(WebP)* | ✅ |
 | 5 | `hero/couple-main.jpg` | PhotoSection — Foto principal | 1184×864px | ✅ |
 | 6 | `gallery/moment-1.jpg` | MomentsGallery — Piquenique | 1024×1024px | ✅ |
 | 7 | `gallery/moment-2.jpg` | MomentsGallery — Praia | 1024×1024px | ✅ |
