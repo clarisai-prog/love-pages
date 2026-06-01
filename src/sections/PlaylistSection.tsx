@@ -1,7 +1,14 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Pause, Heart } from 'lucide-react';
 
-const tracks = [
+interface Track {
+  id: number;
+  title: string;
+  artist: string;
+  duration: string;
+}
+
+const tracks: Track[] = [
   { id: 1, title: 'Seus olhos', artist: 'Nosso amor', duration: '3:14' },
   { id: 2, title: 'Sob o céu a dois', artist: 'Verão com você', duration: '4:02' },
   { id: 3, title: 'Meu coração', artist: 'Eu e você', duration: '3:48' },
@@ -14,11 +21,23 @@ export default function PlaylistSection() {
   const [isVisible, setIsVisible] = useState(false);
   const [activeTrack, setActiveTrack] = useState<number | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(false);
 
+  // Detecta prefers-reduced-motion uma única vez
   useEffect(() => {
+    const mql = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setReducedMotion(mql.matches);
+    const onChange = () => setReducedMotion(mql.matches);
+    mql.addEventListener('change', onChange);
+    return () => mql.removeEventListener('change', onChange);
+  }, []);
+
+  // IntersectionObserver para revelar a seção
+  useEffect(() => {
+    let mounted = true;
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
+        if (entry.isIntersecting && mounted) {
           setIsVisible(true);
           observer.disconnect();
         }
@@ -30,12 +49,20 @@ export default function PlaylistSection() {
       observer.observe(sectionRef.current);
     }
 
-    return () => observer.disconnect();
+    return () => {
+      mounted = false;
+      observer.disconnect();
+    };
   }, []);
+
+  const activeTrackData = useMemo(
+    () => tracks.find((t) => t.id === activeTrack) || null,
+    [activeTrack]
+  );
 
   const handleTrackClick = (id: number) => {
     if (activeTrack === id) {
-      setIsPlaying(!isPlaying);
+      setIsPlaying((prev) => !prev);
     } else {
       setActiveTrack(id);
       setIsPlaying(true);
@@ -72,45 +99,83 @@ export default function PlaylistSection() {
               isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-12'
             }`}
           >
-            <div className="relative w-64 h-64 md:w-80 md:h-80">
-              {/* Vinyl record */}
+            <div
+              className="relative w-64 h-64 md:w-80 md:h-80"
+              role="img"
+              aria-label="Disco de vinil decorativo com coração no centro"
+            >
+              {/* Vinyl record — sempre tem vinyl-spin, controlado por animationPlayState */}
               <div
-                className={`w-full h-full rounded-full bg-[#1a1a1a] shadow-2xl flex items-center justify-center relative overflow-hidden ${
-                  isPlaying ? 'vinyl-spin' : ''
-                }`}
+                className="w-full h-full rounded-full bg-[#1a1a1a] shadow-2xl flex items-center justify-center relative overflow-hidden vinyl-spin"
+                style={{
+                  animationPlayState:
+                    isPlaying && !reducedMotion ? 'running' : 'paused',
+                }}
               >
-                {/* Grooves */}
-                <div className="absolute inset-3 rounded-full border border-[#333333]/60" />
-                <div className="absolute inset-6 rounded-full border border-[#333333]/60" />
-                <div className="absolute inset-10 rounded-full border border-[#333333]/60" />
-                <div className="absolute inset-14 rounded-full border border-[#333333]/60" />
-                <div className="absolute inset-20 rounded-full border border-[#333333]/60" />
+                {/* Grooves — decorativos */}
+                <div
+                  className="absolute inset-3 rounded-full border border-[#333333]/60"
+                  aria-hidden="true"
+                />
+                <div
+                  className="absolute inset-6 rounded-full border border-[#333333]/60"
+                  aria-hidden="true"
+                />
+                <div
+                  className="absolute inset-10 rounded-full border border-[#333333]/60"
+                  aria-hidden="true"
+                />
+                <div
+                  className="absolute inset-14 rounded-full border border-[#333333]/60"
+                  aria-hidden="true"
+                />
+                <div
+                  className="absolute inset-20 rounded-full border border-[#333333]/60"
+                  aria-hidden="true"
+                />
 
                 {/* Label */}
                 <div className="w-28 h-28 md:w-32 md:h-32 rounded-full bg-[#f8dee2] flex items-center justify-center shadow-inner relative z-10">
                   <Heart
                     className="w-12 h-12 md:w-14 md:h-14 text-[#c3505c] fill-[#c3505c]"
                     strokeWidth={0}
+                    aria-label="Coração"
                   />
                 </div>
 
                 {/* Center hole */}
-                <div className="absolute w-3 h-3 bg-[#1a1a1a] rounded-full z-20" />
+                <div
+                  className="absolute w-3 h-3 bg-[#1a1a1a] rounded-full z-20"
+                  aria-hidden="true"
+                />
               </div>
 
-              {/* Tone arm decoration */}
+              {/* Tone arm decoration — cor da paleta + ajuste mobile */}
               <div
-                className="absolute -top-2 right-2 w-3 h-36 bg-[#d4af37] rounded-full shadow-lg"
+                className="absolute -top-2 right-2 w-3 h-24 md:h-36 bg-[#f8dee2] rounded-full shadow-lg"
                 style={{ transformOrigin: 'bottom center', transform: 'rotate(25deg)' }}
+                aria-hidden="true"
               />
-              <div className="absolute top-0 right-0 w-10 h-10 bg-[#d4af37] rounded-full shadow-md flex items-center justify-center">
-                <div className="w-3 h-3 bg-[#8a6e1a] rounded-full" />
+              <div
+                className="absolute top-0 right-0 w-10 h-10 bg-[#f8dee2] rounded-full shadow-md flex items-center justify-center"
+                aria-hidden="true"
+              >
+                <div
+                  className="w-3 h-3 bg-[#c3505c] rounded-full"
+                  aria-hidden="true"
+                />
               </div>
             </div>
 
-            {/* Equalizer */}
+            {/* Equalizer — decorativo, sem áudio real */}
             {isPlaying && (
-              <div className="mt-8 flex items-end justify-center gap-[3px] h-10">
+              <div
+                className="mt-8 flex items-end justify-center gap-[3px] h-10"
+                aria-hidden="true"
+              >
+                <span className="sr-only">
+                  Visualização decorativa do equalizador — sem áudio
+                </span>
                 {Array.from({ length: 14 }).map((_, i) => (
                   <div
                     key={i}
@@ -118,6 +183,7 @@ export default function PlaylistSection() {
                     style={{
                       animationDelay: `${i * 0.08}s`,
                       height: '20%',
+                      animationPlayState: reducedMotion ? 'paused' : 'running',
                     }}
                   />
                 ))}
@@ -125,13 +191,13 @@ export default function PlaylistSection() {
             )}
 
             {/* Active track info */}
-            {activeTrack !== null && (
+            {activeTrackData && (
               <div className="mt-6 text-center">
                 <p className="font-display text-xl md:text-2xl text-[#f8dee3]">
-                  {tracks.find((t) => t.id === activeTrack)?.title}
+                  {activeTrackData.title}
                 </p>
                 <p className="font-body text-sm text-[#f8dee3]/60 mt-1">
-                  {tracks.find((t) => t.id === activeTrack)?.artist}
+                  {activeTrackData.artist}
                 </p>
               </div>
             )}
@@ -145,11 +211,18 @@ export default function PlaylistSection() {
           >
             {tracks.map((track) => {
               const isActive = activeTrack === track.id;
+              const isPaused = isActive && !isPlaying;
               return (
                 <button
                   key={track.id}
                   onClick={() => handleTrackClick(track.id)}
-                  className={`w-full group flex items-center gap-4 p-4 rounded-xl transition-all duration-300 text-left border ${
+                  aria-pressed={isActive}
+                  aria-label={
+                    isActive && isPlaying
+                      ? `Pausar ${track.title}`
+                      : `Tocar ${track.title}`
+                  }
+                  className={`w-full group flex items-center gap-4 p-4 rounded-xl transition-all duration-300 text-left border focus-visible:ring-2 focus-visible:ring-[#f8dee2] focus-visible:outline-none ${
                     isActive
                       ? 'bg-[#f8dee2]/20 border-[#f8dee2]/30 shadow-lg scale-[1.02]'
                       : 'bg-[#f8dee2]/5 border-transparent hover:bg-[#f8dee2]/10 hover:border-[#f8dee2]/10'
@@ -158,7 +231,14 @@ export default function PlaylistSection() {
                   {/* Number / Pause */}
                   <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#f8dee2]/20 text-[#f8dee3] shrink-0 transition-all duration-300">
                     {isActive && isPlaying ? (
-                      <Pause className="w-4 h-4 fill-current" />
+                      <Pause
+                        className="w-4 h-4 fill-current"
+                        aria-label="Pausar"
+                      />
+                    ) : isPaused ? (
+                      <span className="font-body text-sm" aria-hidden="true">
+                        ⏸
+                      </span>
                     ) : (
                       <span className="font-body text-sm">{track.id}</span>
                     )}
@@ -189,25 +269,33 @@ export default function PlaylistSection() {
         </div>
       </div>
 
-      {/* Decorative elements */}
-      <div className="absolute top-20 right-10 w-6 h-6 opacity-20 animate-pulse">
+      {/* Decorative elements — aria-hidden */}
+      <div
+        className="absolute top-20 right-10 w-6 h-6 opacity-20 animate-pulse"
+        aria-hidden="true"
+        style={{ animationPlayState: reducedMotion ? 'paused' : 'running' }}
+      >
         <svg viewBox="0 0 24 24" fill="#f8dee2">
           <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
         </svg>
       </div>
-      <div className="absolute bottom-24 left-10 w-8 h-8 opacity-15">
+      <div
+        className="absolute bottom-24 left-10 w-8 h-8 opacity-15"
+        aria-hidden="true"
+      >
         <svg viewBox="0 0 32 32" fill="#f8dee2">
           <path d="M16 28.5l-1.9-1.7C7.2 21.5 3 17.7 3 13c0-3.3 2.5-5.8 5.8-5.8 2.3 0 4.4 1.1 5.7 2.8 1.3-1.7 3.4-2.8 5.7-2.8 3.3 0 5.8 2.5 5.8 5.8 0 4.7-4.2 8.5-10.1 13.8L16 28.5z" />
         </svg>
       </div>
 
-      {/* Washi tape */}
+      {/* Washi tape — cores da paleta oficial */}
       <div
         className="absolute top-8 left-1/2 -translate-x-1/2 w-24 h-7 opacity-70 rotate-[-3deg]"
         style={{
           background:
-            'repeating-linear-gradient(45deg, #f4a6b5 0px, #f4a6b5 5px, #e8889a 5px, #e8889a 6px)',
+            'repeating-linear-gradient(45deg, #f8dee2 0px, #f8dee2 5px, #c3505c 5px, #c3505c 6px)',
         }}
+        aria-hidden="true"
       />
 
       {/* Bottom torn edge */}
