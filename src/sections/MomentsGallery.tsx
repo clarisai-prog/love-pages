@@ -1,142 +1,252 @@
 import { useEffect, useRef, useState } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-const moments = [
+gsap.registerPlugin(ScrollTrigger);
+
+interface MomentsGalleryProps {
+  /** Disparada pela rasgada do ingresso (CinemaTicket). */
+  ativa?: boolean;
+}
+
+// Linha do tempo — 5 marcos cronológicos.
+// Datas/legendas são placeholder: trocar pelas reais.
+// Marco 1 usa polaroid-left.jpg como placeholder até chegar a foto do 1º encontro.
+const momentos = [
   {
     id: 1,
-    image: 'images/gallery/moment-1.jpg',
-    caption: 'Piquenique no parque',
-    rotation: -6,
+    data: '13 OUT 2019',
+    legenda: 'onde tudo começou',
+    image: 'images/popup/polaroid-left.jpg',
+    rotation: -5,
   },
   {
     id: 2,
-    image: 'images/gallery/moment-2.jpg',
-    caption: 'Pôr do sol na praia',
+    data: 'ABR 2021',
+    legenda: 'nosso primeiro piquenique',
+    image: 'images/gallery/moment-1.jpg',
     rotation: 4,
   },
   {
     id: 3,
-    image: 'images/gallery/moment-3.jpg',
-    caption: 'Jantar juntos',
+    data: 'JAN 2022',
+    legenda: 'o pôr do sol que a gente não esquece',
+    image: 'images/gallery/moment-2.jpg',
     rotation: -3,
   },
   {
     id: 4,
-    image: 'images/gallery/moment-4.jpg',
-    caption: 'Café na Europa',
+    data: 'SET 2022',
+    legenda: 'jantar improvisado, noite perfeita',
+    image: 'images/gallery/moment-3.jpg',
     rotation: 5,
+  },
+  {
+    id: 5,
+    data: 'JUN 2023',
+    legenda: 'café do outro lado do mundo',
+    image: 'images/gallery/moment-4.jpg',
+    rotation: -4,
   },
 ];
 
-export default function MomentsGallery() {
+export default function MomentsGallery({ ativa = false }: MomentsGalleryProps) {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
+  const lineRef = useRef<HTMLDivElement>(null);
+  const itemsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const [iniciado, setIniciado] = useState(false);
 
+  // Início: pela rasgada (ativa) OU quando a seção entra na viewport (fallback)
   useEffect(() => {
-    const observer = new IntersectionObserver(
+    if (ativa) {
+      setIniciado(true);
+      return;
+    }
+    const section = sectionRef.current;
+    if (!section) return;
+    const io = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.disconnect();
-        }
+        if (entry.isIntersecting) setIniciado(true);
       },
-      { threshold: 0.15 }
+      { threshold: 0.05 }
     );
+    io.observe(section);
+    return () => io.disconnect();
+  }, [ativa]);
 
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
+  // Reveal scroll-driven: o fio cresce e cada marco aparece em sequência
+  useEffect(() => {
+    if (!iniciado) return;
+    const section = sectionRef.current;
+    if (!section) return;
+
+    const reduce = window.matchMedia(
+      '(prefers-reduced-motion: reduce)'
+    ).matches;
+    const triggers: ScrollTrigger[] = [];
+
+    // O fio que conecta as memórias
+    if (lineRef.current) {
+      if (reduce) {
+        gsap.set(lineRef.current, { scaleY: 1 });
+      } else {
+        gsap.set(lineRef.current, { transformOrigin: 'top center', scaleY: 0 });
+        const t = gsap.to(lineRef.current, {
+          scaleY: 1,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: section,
+            start: 'top 70%',
+            end: 'bottom 65%',
+            scrub: true,
+          },
+        });
+        if (t.scrollTrigger) triggers.push(t.scrollTrigger);
+      }
     }
 
-    return () => observer.disconnect();
-  }, []);
+    // Cada marco
+    itemsRef.current.forEach((el) => {
+      if (!el) return;
+      const img = el.querySelector('img');
+      if (reduce) {
+        gsap.set(el, { opacity: 1, y: 0 });
+        if (img) gsap.set(img, { filter: 'grayscale(0)' });
+        return;
+      }
+      gsap.set(el, { opacity: 0, y: 40 });
+      const reveal = gsap.to(el, {
+        opacity: 1,
+        y: 0,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: el,
+          start: 'top 88%',
+          end: 'top 60%',
+          scrub: true,
+        },
+      });
+      if (reveal.scrollTrigger) triggers.push(reveal.scrollTrigger);
+
+      if (img) {
+        gsap.set(img, { filter: 'grayscale(1)' });
+        const color = gsap.to(img, {
+          filter: 'grayscale(0)',
+          ease: 'none',
+          scrollTrigger: {
+            trigger: el,
+            start: 'top 80%',
+            end: 'top 45%',
+            scrub: true,
+          },
+        });
+        if (color.scrollTrigger) triggers.push(color.scrollTrigger);
+      }
+    });
+
+    ScrollTrigger.refresh();
+    return () => triggers.forEach((t) => t.kill());
+  }, [iniciado]);
 
   return (
     <section
       ref={sectionRef}
-      className="relative bg-[#f8dee2] py-20 md:py-32 overflow-hidden"
+      className="relative py-20 md:py-32 overflow-hidden"
+      style={{ backgroundColor: '#faf5f0' }}
     >
-      <div className="max-w-6xl mx-auto px-6">
-        {/* Title */}
-        <div
-          className={`text-center mb-6 transition-all duration-1000 ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-          }`}
-        >
+      <div className="max-w-5xl mx-auto px-6">
+        {/* Título */}
+        <div className="text-center mb-4">
           <h2
-            className="font-display text-4xl md:text-5xl lg:text-6xl text-[#b00d1e]"
+            className="font-display text-4xl md:text-5xl lg:text-6xl text-[#b00d1e] leading-tight"
             style={{ fontWeight: 500 }}
           >
-            Nossos momentos
+            E o filme começou a passar…
           </h2>
         </div>
 
-        {/* Subtitle */}
-        <div
-          className={`text-center mb-16 transition-all duration-1000 delay-200 ${
-            isVisible ? 'opacity-100' : 'opacity-0'
-          }`}
-        >
-          <p className="font-body text-sm md:text-base text-[#b00d1e]/80 max-w-lg mx-auto leading-relaxed">
-            E ainda centenas de momentos que eu gostaria de reviver com você, de novo e de novo…
+        {/* Subtítulo */}
+        <div className="text-center mb-16 md:mb-24">
+          <p className="font-body text-sm md:text-base text-[#c3505c]/80 max-w-lg mx-auto leading-relaxed">
+            Cada cena, uma memória de verdade — na ordem em que aconteceram.
           </p>
         </div>
 
-        {/* Polaroid Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
-          {moments.map((moment, index) => (
-            <div
-              key={moment.id}
-              className={`transition-all duration-700 ${
-                isVisible
-                  ? 'opacity-100 translate-y-0'
-                  : 'opacity-0 translate-y-12'
-              }`}
-              style={{
-                transitionDelay: `${400 + index * 150}ms`,
-                transform: isVisible
-                  ? `rotate(${moment.rotation}deg)`
-                  : `rotate(${moment.rotation}deg) translateY(30px)`,
-              }}
-            >
-              <div className="bg-white p-3 pb-12 shadow-lg hover:shadow-xl transition-shadow duration-300 hover:scale-105 hover:rotate-0 transition-transform">
-                <div className="aspect-square overflow-hidden bg-gray-100">
-                  <img
-                    src={moment.image}
-                    alt={moment.caption}
-                    className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500"
-                  />
+        {/* Linha do tempo */}
+        <div className="relative">
+          {/* O fio */}
+          <div
+            ref={lineRef}
+            className="absolute top-0 bottom-0 left-4 md:left-1/2 md:-translate-x-1/2 w-[2px] bg-[#c3505c]/50"
+          />
+
+          <div className="space-y-16 md:space-y-28">
+            {momentos.map((m, i) => {
+              const esquerda = i % 2 === 0;
+              return (
+                <div
+                  key={m.id}
+                  ref={(el) => {
+                    itemsRef.current[i] = el;
+                  }}
+                  className="relative grid md:grid-cols-2 items-center"
+                >
+                  {/* Marcador na linha */}
+                  <div className="absolute top-1/2 -translate-y-1/2 left-4 md:left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-[#c3505c] ring-4 ring-[#faf5f0] z-10" />
+
+                  {/* Polaroid (lado alternado no desktop) */}
+                  <div
+                    className={`pl-12 md:pl-0 ${
+                      esquerda
+                        ? 'md:col-start-1 md:pr-12 md:justify-self-end'
+                        : 'md:col-start-2 md:pl-12 md:justify-self-start'
+                    }`}
+                  >
+                    <div
+                      className="inline-block bg-white p-3 pb-8 shadow-lg"
+                      style={{ transform: `rotate(${m.rotation}deg)` }}
+                    >
+                      <div className="w-48 md:w-60 aspect-square overflow-hidden bg-gray-100">
+                        <img
+                          src={m.image}
+                          alt={m.legenda}
+                          className="w-full h-full object-cover"
+                          style={{ filter: 'grayscale(1)' }}
+                        />
+                      </div>
+                      <p className="mt-3 text-center font-mono text-[10px] tracking-[0.2em] text-[#b00d1e]/80">
+                        {m.data}
+                      </p>
+                      <p className="text-center font-display italic text-sm text-[#c3505c] mt-1">
+                        {m.legenda}
+                      </p>
+                    </div>
+                  </div>
                 </div>
-                <p className="mt-3 text-center font-body text-xs text-[#b00d1e]/70">
-                  {moment.caption}
-                </p>
-              </div>
-            </div>
-          ))}
+              );
+            })}
+          </div>
         </div>
 
-        {/* Decorative floating elements */}
-        <div className="absolute top-20 left-10 w-8 h-8 opacity-20">
-          <svg viewBox="0 0 32 32" fill="none" className="w-full h-full text-[#c3505c]">
-            <circle cx="16" cy="16" r="14" stroke="currentColor" strokeWidth="1" />
-          </svg>
-        </div>
-        <div className="absolute bottom-20 right-10 w-12 h-12 opacity-15">
-          <svg viewBox="0 0 48 48" fill="none" className="w-full h-full text-[#c3505c]">
-            <path
-              d="M24 4L28 20H44L31 30L35 46L24 36L13 46L17 30L4 20H20L24 4Z"
-              fill="currentColor"
-              opacity="0.3"
-            />
-          </svg>
+        {/* Fecho */}
+        <div className="text-center mt-16 md:mt-24">
+          <p className="font-body text-sm md:text-base text-[#c3505c]/70 max-w-lg mx-auto leading-relaxed">
+            E ainda centenas de momentos que eu gostaria de reviver com você, de
+            novo e de novo…
+          </p>
         </div>
       </div>
 
-      {/* Torn paper bottom edge */}
-      <div className="absolute bottom-0 left-0 right-0 z-20 pointer-events-none">
-        <img
-          src="images/efeito-papel-1.webp"
-          alt=""
-          className="w-full h-16 md:h-24 object-cover object-top"
-        />
+      {/* Borda rasgada SVG → vermelho do HeartbeatSection */}
+      <div className="absolute bottom-0 left-0 right-0">
+        <svg
+          viewBox="0 0 1440 60"
+          preserveAspectRatio="none"
+          className="w-full h-10 md:h-16"
+          fill="#c3505c"
+        >
+          <path d="M0,30 Q30,5 60,25 T120,15 T180,28 T240,10 T300,22 T360,8 T420,26 T480,12 T540,24 T600,10 T660,20 T720,6 T780,25 T840,14 T900,22 T960,8 T1020,26 T1080,12 T1140,20 T1200,5 T1260,24 T1320,15 T1380,22 T1440,10 L1440,60 L0,60 Z" />
+        </svg>
       </div>
     </section>
   );

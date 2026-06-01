@@ -1,8 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import { ArrowRight } from 'lucide-react';
+import gsap from 'gsap';
 
-export default function CinemaTicket() {
+interface CinemaTicketProps {
+  onRasgar?: () => void;
+}
+
+export default function CinemaTicket({ onRasgar }: CinemaTicketProps) {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const stubRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
   const [isRevealed, setIsRevealed] = useState(false);
   const audioCtxRef = useRef<AudioContext | null>(null);
@@ -71,20 +77,39 @@ export default function CinemaTicket() {
   };
 
   const handleTicketClick = () => {
+    if (isRevealed) return;
     initAudio();
     playTearSound();
-    setIsRevealed(!isRevealed);
+    setIsRevealed(true);
+
+    // O canhoto "voa" ao rasgar
+    if (
+      stubRef.current &&
+      !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
+      gsap.to(stubRef.current, {
+        x: 48,
+        y: 24,
+        rotation: -12,
+        opacity: 0,
+        duration: 0.6,
+        ease: 'power3.out',
+      });
+    }
+
+    // Dispara a linha do tempo (Cena 2.5)
+    onRasgar?.();
   };
 
   return (
     <section
       ref={sectionRef}
       className="relative py-20 md:py-32 overflow-hidden"
-      style={{ backgroundColor: '#f8dee2' }}
+      style={{ backgroundColor: '#faf5f0' }}
     >
       {/* Paper texture overlay */}
       <div
-        className="fixed inset-0 pointer-events-none opacity-[0.04]"
+        className="absolute inset-0 pointer-events-none opacity-[0.04]"
         style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
           backgroundSize: '200px 200px',
@@ -116,7 +141,7 @@ export default function CinemaTicket() {
           }`}
         >
           <p className="font-body text-sm text-[#b00d1e] tracking-wide">
-            Toque na parte destacável do ingresso
+            Rasga aqui pra começar o filme
           </p>
           <div className="flex justify-center mt-2">
             <ArrowRight className="w-5 h-5 text-[#b00d1e] rotate-90 md:rotate-0" />
@@ -183,7 +208,7 @@ export default function CinemaTicket() {
                   </div>
                   <div className="flex justify-between">
                     <span className="opacity-60">MOVIE:</span>
-                    <span className="tracking-wide">NOSSO AMOR</span>
+                    <span className="tracking-wide">A NOSSA HISTÓRIA</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="opacity-60">ROW:</span>
@@ -207,14 +232,13 @@ export default function CinemaTicket() {
                 </div>
 
                 {/* Decorative corner cuts */}
-                <div className="absolute -left-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-[#f8dee2] rounded-full" />
+                <div className="absolute -left-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-[#faf5f0] rounded-full" />
               </div>
 
               {/* Tear-off stub */}
               <div
-                className={`relative border-l-2 border-dashed border-[#f8dee2]/50 px-4 py-8 md:px-6 md:py-10 w-20 md:w-24 flex flex-col items-center justify-center transition-all duration-700 ${
-                  isRevealed ? '-translate-x-2 rotate-[-5deg]' : ''
-                }`}
+                ref={stubRef}
+                className="relative border-l-2 border-dashed border-[#f8dee2]/50 px-4 py-8 md:px-6 md:py-10 w-20 md:w-24 flex flex-col items-center justify-center"
                 style={{
                   backgroundColor: '#c3505c',
                   boxShadow: '0 1px 1px rgba(0,0,0,0.12), 0 2px 2px rgba(0,0,0,0.12), 0 4px 4px rgba(0,0,0,0.12)',
@@ -256,7 +280,7 @@ export default function CinemaTicket() {
                 </p>
 
                 {/* Decorative corner cuts */}
-                <div className="absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-[#f8dee2] rounded-full" />
+                <div className="absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-[#faf5f0] rounded-full" />
               </div>
             </div>
 

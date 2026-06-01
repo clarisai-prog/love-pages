@@ -117,14 +117,16 @@ export default function OpeningText() {
         </svg>
       </div>
 
-      {/* Torn paper bottom edge - image overlay */}
-      <div className="absolute bottom-0 left-0 right-0 z-20 pointer-events-none">
-        <img
-          src="images/efeito-papel-1.webp"
-          alt=""
-          className="w-full h-16 md:h-24 object-cover object-top"
-          style={{ mixBlendMode: 'normal' }}
-        />
+      {/* Borda rasgada SVG → creme da PhotoSection */}
+      <div className="absolute bottom-0 left-0 right-0">
+        <svg
+          viewBox="0 0 1440 60"
+          preserveAspectRatio="none"
+          className="w-full h-10 md:h-16"
+          fill="#faf5f0"
+        >
+          <path d="M0,30 Q30,5 60,25 T120,15 T180,28 T240,10 T300,22 T360,8 T420,26 T480,12 T540,24 T600,10 T660,20 T720,6 T780,25 T840,14 T900,22 T960,8 T1020,26 T1080,12 T1140,20 T1200,5 T1260,24 T1320,15 T1380,22 T1440,10 L1440,60 L0,60 Z" />
+        </svg>
       </div>
     </section>
   );

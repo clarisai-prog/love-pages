@@ -13,6 +13,7 @@ import NoiseOverlay from './components/NoiseOverlay';
 
 function App() {
   const [entered, setEntered] = useState(false);
+  const [historiaIniciada, setHistoriaIniciada] = useState(false);
 
   const handleEnter = () => {
     setEntered(true);
@@ -31,8 +32,8 @@ function App() {
         <main className="relative">
           <OpeningText />
           <PhotoSection />
-          <CinemaTicket />
-          <MomentsGallery />
+          <CinemaTicket onRasgar={() => setHistoriaIniciada(true)} />
+          <MomentsGallery ativa={historiaIniciada} />
           <HeartbeatSection />
           <TravelSection />
           <BeforeWeMet />
