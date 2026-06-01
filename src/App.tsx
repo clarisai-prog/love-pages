@@ -35,8 +35,8 @@ function App() {
           <CinemaTicket onRasgar={() => setHistoriaIniciada(true)} />
           <MomentsGallery ativa={historiaIniciada} />
           <HeartbeatSection />
-          <TravelSection />
           <BeforeWeMet />
+          <TravelSection />
           <PlaylistSection />
           <ThankYouSection />
         </main>

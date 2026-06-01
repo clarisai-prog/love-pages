@@ -25,7 +25,7 @@ export default function BeforeWeMet() {
   return (
     <section
       ref={sectionRef}
-      className="relative bg-[#f8dee2] py-20 md:py-32 overflow-hidden"
+      className="relative bg-[#faf5f0] py-20 md:py-32 overflow-hidden"
     >
       <div className="max-w-5xl mx-auto px-6">
         {/* Title */}
@@ -35,7 +35,7 @@ export default function BeforeWeMet() {
           }`}
         >
           <h2
-            className="font-display text-4xl md:text-5xl lg:text-6xl text-[#b00d1e]"
+            className="font-display text-4xl md:text-5xl lg:text-6xl text-[#c3505c]"
             style={{ fontWeight: 500 }}
           >
             antes de nos conhecermos
@@ -56,7 +56,7 @@ export default function BeforeWeMet() {
                 <div className="relative overflow-hidden bg-[#f5f0e8]">
                   <img
                     src="images/childhood/childhood.jpg"
-                    alt="Наше детство"
+                    alt="Nossas fotos de infância"
                     className="w-full h-auto object-cover sepia-[0.3]"
                   />
                 </div>
@@ -85,22 +85,22 @@ export default function BeforeWeMet() {
               isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-12'
             }`}
           >
-            <p className="font-body text-base md:text-lg text-[#b00d1e]/80 leading-relaxed">
+            <p className="font-body text-base md:text-lg text-[#c3505c]/80 leading-relaxed">
               Éramos apenas crianças, sem saber que um dia seríamos o mais importante "nós"
               na vida um do outro
             </p>
 
             {/* Decorative divider */}
             <div className="mt-8 flex items-center gap-3">
-              <div className="w-8 h-[1px] bg-[#b00d1e]/30" />
-              <svg className="w-4 h-4 text-[#b00d1e]/30" viewBox="0 0 24 24" fill="currentColor">
+              <div className="w-8 h-[1px] bg-[#c3505c]/30" />
+              <svg className="w-4 h-4 text-[#c3505c]/30" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
               </svg>
-              <div className="w-8 h-[1px] bg-[#b00d1e]/30" />
+              <div className="w-8 h-[1px] bg-[#c3505c]/30" />
             </div>
 
             {/* Quote */}
-            <blockquote className="mt-8 font-display text-xl md:text-2xl text-[#b00d1e]/60 italic leading-relaxed">
+            <blockquote className="mt-8 font-display text-xl md:text-2xl text-[#c3505c]/60 italic leading-relaxed">
               "Toda história de amor é linda, mas a nossa é a minha favorita"
             </blockquote>
           </div>
@@ -111,6 +111,18 @@ export default function BeforeWeMet() {
       <div className="absolute top-20 right-10 w-6 h-6 opacity-20 animate-pulse">
         <svg viewBox="0 0 24 24" fill="#c3505c">
           <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+        </svg>
+      </div>
+
+      {/* Borda rasgada SVG → vermelho do TravelSection */}
+      <div className="absolute bottom-0 left-0 right-0">
+        <svg
+          viewBox="0 0 1440 60"
+          preserveAspectRatio="none"
+          className="w-full h-12 md:h-16"
+          fill="#c3505c"
+        >
+          <path d="M0,30 Q30,5 60,25 T120,15 T180,28 T240,10 T300,22 T360,8 T420,26 T480,12 T540,24 T600,10 T660,20 T720,6 T780,25 T840,14 T900,22 T960,8 T1020,26 T1080,12 T1140,20 T1200,5 T1260,24 T1320,15 T1380,22 T1440,10 L1440,60 L0,60 Z" />
         </svg>
       </div>
     </section>
