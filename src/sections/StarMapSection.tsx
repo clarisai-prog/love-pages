@@ -112,27 +112,6 @@ export default function StarMapSection() {
       className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden"
       style={{ backgroundColor: '#0d0d0f' }}
     >
-      {/* ── Transição suave do creme/rosa para o escuro ──
-           h-48 (192px) cobre completamente a borda rasgada #f8dee2
-           da PlaylistSection. Gradiente vai do rosa exato ao preto sólido.  */}
-      <div className="absolute -top-1 left-0 right-0 h-48 pointer-events-none z-20">
-        <svg
-          viewBox="0 0 1440 192"
-          preserveAspectRatio="none"
-          className="w-full h-full"
-        >
-          <defs>
-            <linearGradient id="nightFade" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#f8dee2" />
-              <stop offset="35%" stopColor="#c3505c" />
-              <stop offset="70%" stopColor="#0d0d0f" />
-              <stop offset="100%" stopColor="#0d0d0f" />
-            </linearGradient>
-          </defs>
-          <rect width="1440" height="192" fill="url(#nightFade)" />
-        </svg>
-      </div>
-
       {/* ── Campo de estrelas (SVG) ──
            xMidYMid slice mantém círculos perfeitos e cobre a tela inteira.  */}
       <svg

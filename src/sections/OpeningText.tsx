@@ -69,24 +69,6 @@ export default function OpeningText() {
       className="relative min-h-screen flex items-center justify-center overflow-hidden"
       style={{ backgroundColor: '#c3505c' }}
     >
-      {/* ── Transição suave do SceneConvite (#f5f0e8) para vermelho ── */}
-      <div className="absolute top-0 left-0 right-0 h-24 pointer-events-none z-10">
-        <svg
-          viewBox="0 0 1440 96"
-          preserveAspectRatio="none"
-          className="w-full h-full"
-        >
-          <defs>
-            <linearGradient id="openFade" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#f5f0e8" />
-              <stop offset="50%" stopColor="#faf5f0" />
-              <stop offset="100%" stopColor="#c3505c" />
-            </linearGradient>
-          </defs>
-          <rect width="1440" height="96" fill="url(#openFade)" />
-        </svg>
-      </div>
-
       {/* ── Decorative corner element ── */}
       <div className="absolute top-8 right-8 w-16 h-16 opacity-60">
         <svg
