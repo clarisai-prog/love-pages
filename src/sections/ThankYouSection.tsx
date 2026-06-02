@@ -1,37 +1,124 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
+
+/* ═══════════════════════════════════════════════════════════
+   ThankYouSection — Capítulo 5: O Futuro
+   Fechamento emocional da história. Fundo rosa #f8dee2,
+   texto central emergindo em stagger, coração pulsando GSAP,
+   decorações respeitando prefers-reduced-motion.
+   ═══════════════════════════════════════════════════════════ */
 
 export default function ThankYouSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const heartRef = useRef<SVGSVGElement>(null);
+  const decorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.3 }
-    );
+    const section = sectionRef.current;
+    const content = contentRef.current;
+    const heart = heartRef.current;
+    const decor = decorRef.current;
+    if (!section || !content || !heart || !decor) return;
 
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const triggers: ScrollTrigger[] = [];
+
+    /* Reduced-motion: tudo visível imediatamente, sem animações */
+    if (reduce) {
+      gsap.set(content.children, { opacity: 1, y: 0, scale: 1 });
+      gsap.set(heart, { scale: 1 });
+      return;
     }
 
-    return () => observer.disconnect();
+    /* Reveal scroll-driven: cada elemento emerge em stagger */
+    const children = content.children;
+    gsap.set(children, { opacity: 0, y: 30 });
+    const reveal = gsap.to(children, {
+      opacity: 1,
+      y: 0,
+      stagger: 0.18,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: section,
+        start: 'top 75%',
+        end: 'top 30%',
+        scrub: true,
+      },
+    });
+    if (reveal.scrollTrigger) triggers.push(reveal.scrollTrigger);
+
+    /* Coração pulsa com GSAP (não CSS animation) */
+    gsap.set(heart, { scale: 1 });
+    const pulse = gsap.to(heart, {
+      scale: 1.08,
+      duration: 0.15,
+      yoyo: true,
+      repeat: -1,
+      ease: 'power2.out',
+    });
+    const pulseLoop = gsap.to(pulse, {
+      delay: 1.2,
+      duration: 1.2,
+      repeat: -1,
+    });
+
+    return () => {
+      triggers.forEach((t) => t.kill());
+      pulse.kill();
+      pulseLoop.kill();
+    };
   }, []);
+
+  /* Classes condicionais para decorações: sem animação em reduce */
+  const reduce =
+    typeof window !== 'undefined' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-screen flex flex-col items-center justify-center bg-[#f8dee2] overflow-hidden"
+      className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden"
+      style={{ backgroundColor: '#f8dee2' }}
     >
-      {/* Decorative corner elements */}
-      <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
-        {/* Top left flower-like decoration */}
-        <div className="absolute top-10 left-10 w-24 h-24 opacity-20">
-          <svg viewBox="0 0 96 96" fill="none" className="w-full h-full text-[#c3505c] slow-rotate">
+      {/* ── Transição suave do escuro do MoonPhase para rosa ── */}
+      <div className="absolute top-0 left-0 right-0 h-24 pointer-events-none z-10">
+        <svg
+          viewBox="0 0 1440 96"
+          preserveAspectRatio="none"
+          className="w-full h-full"
+        >
+          <defs>
+            <linearGradient id="thankFade" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#0d0d0f" />
+              <stop offset="50%" stopColor="#c3505c" />
+              <stop offset="100%" stopColor="#f8dee2" />
+            </linearGradient>
+          </defs>
+          <rect width="1440" height="96" fill="url(#thankFade)" />
+        </svg>
+      </div>
+
+      {/* ── Decorativos (sem animação em reduced-motion) ── */}
+      <div
+        ref={decorRef}
+        className="absolute top-0 left-0 w-full h-full pointer-events-none"
+        aria-hidden="true"
+      >
+        {/* Top left flower */}
+        <div
+          className={`absolute top-10 left-10 w-24 h-24 opacity-20 ${
+            reduce ? '' : 'slow-rotate'
+          }`}
+        >
+          <svg
+            viewBox="0 0 96 96"
+            fill="none"
+            className="w-full h-full text-[#c3505c]"
+          >
             <path
               d="M48 8C48 8 52 32 72 40C72 40 52 48 48 72C48 72 44 48 24 40C24 40 44 32 48 8Z"
               fill="currentColor"
@@ -46,8 +133,16 @@ export default function ThankYouSection() {
         </div>
 
         {/* Bottom right decoration */}
-        <div className="absolute bottom-20 right-10 w-20 h-20 opacity-15">
-          <svg viewBox="0 0 80 80" fill="none" className="w-full h-full text-[#c3505c] sway">
+        <div
+          className={`absolute bottom-20 right-10 w-20 h-20 opacity-15 ${
+            reduce ? '' : 'sway'
+          }`}
+        >
+          <svg
+            viewBox="0 0 80 80"
+            fill="none"
+            className="w-full h-full text-[#c3505c]"
+          >
             <path
               d="M40 8C40 8 44 28 60 32C60 32 44 36 40 56C40 56 36 36 20 32C20 32 36 28 40 8Z"
               fill="currentColor"
@@ -68,35 +163,33 @@ export default function ThankYouSection() {
         </div>
       </div>
 
-      {/* Main content */}
-      <div className="text-center px-6 max-w-3xl mx-auto relative z-10">
+      {/* ── Main content ── */}
+      <div
+        ref={contentRef}
+        className="text-center px-6 max-w-3xl mx-auto relative z-10"
+      >
         {/* Main message */}
-        <div
-          className={`transition-all duration-1000 ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-          }`}
-        >
+        <div>
           <h2
-            className="font-display text-3xl md:text-4xl lg:text-5xl text-[#f8dee3] leading-relaxed"
+            className="font-display text-3xl md:text-4xl lg:text-5xl text-[#c3505c] leading-relaxed"
             style={{
               fontWeight: 500,
               textShadow: '0 2px 20px rgba(195, 80, 92, 0.3)',
-              color: '#c3505c',
             }}
           >
             Obrigada pelo nosso "agora"
             <br />
-            <span className="text-[#b00d1e]">e por tudo que nos espera pela frente</span>
+            <span className="text-[#b00d1e]">
+              e por tudo que nos espera pela frente
+            </span>
           </h2>
         </div>
 
         {/* Signature */}
-        <div
-          className={`mt-16 transition-all duration-1000 delay-500 ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-          }`}
-        >
-          <p className="font-body text-sm text-[#b00d1e]/60 tracking-wide">
+        <div className="mt-16">
+          <p
+            className="font-body text-sm text-[#b00d1e]/60 tracking-wide"
+          >
             Com amor,
           </p>
           <p
@@ -107,34 +200,29 @@ export default function ThankYouSection() {
           </p>
         </div>
 
-        {/* Final heart */}
-        <div
-          className={`mt-12 transition-all duration-1000 delay-700 ${
-            isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-50'
-          }`}
-        >
+        {/* Final heart — pulso via GSAP (não CSS) */}
+        <div className="mt-12">
           <svg
-            className="w-12 h-12 mx-auto text-[#c3505c] heartbeat"
+            ref={heartRef}
+            className="w-12 h-12 mx-auto text-[#c3505c]"
             viewBox="0 0 48 48"
             fill="currentColor"
+            aria-label="Coração"
+            role="img"
           >
             <path d="M24 42.5l-2.9-2.6C14.4 30.8 8 25.6 8 19c0-5 3.8-8.5 8.5-8.5 3 0 5.8 1.4 7.5 3.6 1.7-2.2 4.5-3.6 7.5-3.6C36.2 10.5 40 14 40 19c0 6.6-6.4 11.8-13.1 20.9L24 42.5z" />
           </svg>
         </div>
 
         {/* Year */}
-        <div
-          className={`mt-8 transition-all duration-1000 delay-900 ${
-            isVisible ? 'opacity-100' : 'opacity-0'
-          }`}
-        >
+        <div className="mt-8">
           <p className="font-display text-lg text-[#b00d1e]/40 tracking-[0.3em]">
             {new Date().getFullYear()}
           </p>
         </div>
       </div>
 
-      {/* Bottom gradient */}
+      {/* ── Bottom gradient ── */}
       <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#c3505c]/10 to-transparent pointer-events-none" />
     </section>
   );

@@ -1,57 +1,70 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
+/* ═══════════════════════════════════════════════════════════
+   PhotoSection — Capítulo 2: O Começo
+   Polaroid central com foto que ganha cor no scroll.
+   Reveal do container e grayscale da foto ambos via
+   GSAP ScrollTrigger para consistência com o resto do site.
+   ═══════════════════════════════════════════════════════════ */
+
 export default function PhotoSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const polaroidRef = useRef<HTMLDivElement>(null);
   const photoRef = useRef<HTMLImageElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.2 }
-    );
+    const section = sectionRef.current;
+    const polaroid = polaroidRef.current;
+    const photo = photoRef.current;
+    if (!section || !polaroid || !photo) return;
 
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
+    const reduce = window.matchMedia(
+      '(prefers-reduced-motion: reduce)'
+    ).matches;
+    const triggers: ScrollTrigger[] = [];
 
-    return () => observer.disconnect();
-  }, []);
-
-  // A foto ganha cor conforme entra na viewport (funciona no mobile, sem hover)
-  useEffect(() => {
-    const el = photoRef.current;
-    if (!el) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      el.style.filter = 'grayscale(0)';
+    /* Reduced-motion: tudo visível, foto colorida */
+    if (reduce) {
+      gsap.set(polaroid, { opacity: 1, y: 0 });
+      gsap.set(photo, { filter: 'grayscale(0)' });
       return;
     }
-    const tween = gsap.fromTo(
-      el,
-      { filter: 'grayscale(1)' },
-      {
-        filter: 'grayscale(0)',
-        ease: 'none',
-        scrollTrigger: {
-          trigger: el,
-          start: 'top 80%',
-          end: 'top 35%',
-          scrub: true,
-        },
-      }
-    );
+
+    /* Reveal do polaroid: sobe e aparece */
+    gsap.set(polaroid, { opacity: 0, y: 50 });
+    const reveal = gsap.to(polaroid, {
+      opacity: 1,
+      y: 0,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: section,
+        start: 'top 80%',
+        end: 'top 40%',
+        scrub: true,
+      },
+    });
+    if (reveal.scrollTrigger) triggers.push(reveal.scrollTrigger);
+
+    /* Foto ganha cor no scroll (mobile + desktop) */
+    gsap.set(photo, { filter: 'grayscale(1)' });
+    const color = gsap.to(photo, {
+      filter: 'grayscale(0)',
+      ease: 'none',
+      scrollTrigger: {
+        trigger: photo,
+        start: 'top 80%',
+        end: 'top 35%',
+        scrub: true,
+      },
+    });
+    if (color.scrollTrigger) triggers.push(color.scrollTrigger);
+
     return () => {
-      tween.scrollTrigger?.kill();
-      tween.kill();
+      triggers.forEach((t) => t.kill());
     };
   }, []);
 
@@ -63,16 +76,13 @@ export default function PhotoSection() {
     >
       <div className="max-w-4xl mx-auto px-6">
         {/* Polaroid frame */}
-        <div
-          className={`relative transition-all duration-1000 ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
-          }`}
-        >
+        <div ref={polaroidRef} className="relative">
           {/* Washi tape — top center */}
           <img
             src="images/popup/washi-tape.png"
             alt=""
             className="absolute -top-4 left-1/2 -translate-x-1/2 w-28 md:w-36 h-8 md:h-10 opacity-80 rotate-[-6deg] object-cover pointer-events-none z-10"
+            aria-hidden="true"
           />
 
           {/* White polaroid frame */}
@@ -82,13 +92,13 @@ export default function PhotoSection() {
               <img
                 ref={photoRef}
                 src="images/hero/couple-main.jpg"
-                alt="Nossa foto"
+                alt="Nossa foto — a foto que eu olho quando bate saudade de você"
                 className="w-full h-auto object-cover"
                 style={{ maxHeight: '60vh', filter: 'grayscale(1)' }}
               />
             </div>
 
-            {/* Handwritten caption below photo */}
+            {/* Handwritten caption */}
             <p
               className="mt-6 md:mt-8 text-center font-display text-lg md:text-xl italic tracking-wide"
               style={{ color: '#c3505c', fontWeight: 400 }}
@@ -102,7 +112,7 @@ export default function PhotoSection() {
         </div>
       </div>
 
-      {/* Borda rasgada SVG → creme do ingresso */}
+      {/* ── Borda rasgada SVG → creme do ingresso ── */}
       <div className="absolute bottom-0 left-0 right-0">
         <svg
           viewBox="0 0 1440 60"

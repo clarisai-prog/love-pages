@@ -224,6 +224,23 @@ export default function SceneConvite({ onEnter }: SceneConviteProps) {
 
   // Main animation timeline
   useEffect(() => {
+    const reduce = window.matchMedia(
+      '(prefers-reduced-motion: reduce)'
+    ).matches;
+
+    /* Reduced-motion: tudo visível instantaneamente */
+    if (reduce) {
+      if (heartWrapperRef.current) {
+        gsap.set(heartWrapperRef.current, { scale: 1, opacity: 1 });
+      }
+      [textParaVoceRef, textSegredoRef, textClicaRef, setaRef].forEach(
+        (ref) => {
+          if (ref.current) gsap.set(ref.current, { opacity: 1, y: 0, scale: 1 });
+        }
+      );
+      return;
+    }
+
     const tl = gsap.timeline({ delay: 0.5 });
 
     // 1. Heart grows from 12px to 240px
@@ -276,9 +293,6 @@ export default function SceneConvite({ onEnter }: SceneConviteProps) {
       );
     }
 
-    // Audio iniciado apenas após interação do usuário (clique no coração)
-    // para respeitar a política de autoplay dos browsers
-
     return () => {
       tl.kill();
     };
@@ -287,6 +301,11 @@ export default function SceneConvite({ onEnter }: SceneConviteProps) {
   // Heartbeat animation synced
   useEffect(() => {
     if (exploded) return;
+    const reduce = window.matchMedia(
+      '(prefers-reduced-motion: reduce)'
+    ).matches;
+    if (reduce) return;
+
     const interval = setInterval(() => {
       if (heartRef.current) {
         gsap.fromTo(
@@ -353,6 +372,16 @@ export default function SceneConvite({ onEnter }: SceneConviteProps) {
 
   useEffect(() => {
     if (!exploded) return;
+    const reduce = window.matchMedia(
+      '(prefers-reduced-motion: reduce)'
+    ).matches;
+
+    /* Reduced-motion: texto completo instantaneamente */
+    if (reduce) {
+      setTypewriterText(fullText);
+      return;
+    }
+
     let index = 0;
     const interval = setInterval(() => {
       if (index <= fullText.length) {

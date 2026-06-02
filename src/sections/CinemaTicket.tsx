@@ -1,40 +1,82 @@
 import { useEffect, useRef, useState } from 'react';
 import { ArrowRight } from 'lucide-react';
 import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 interface CinemaTicketProps {
   onRasgar?: () => void;
 }
 
+/* Barcode seed-fixo para consistência hidratação SSR */
+function generateBarcodeHeights(count = 24): number[] {
+  let seed = 13; // número significativo do casal
+  const rnd = () => {
+    seed = (seed * 16807 + 0) % 2147483647;
+    return (seed - 1) / 2147483646;
+  };
+  return Array.from({ length: count }, () => 35 + rnd() * 55);
+}
+
 export default function CinemaTicket({ onRasgar }: CinemaTicketProps) {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const titleRef = useRef<HTMLDivElement>(null);
+  const instructRef = useRef<HTMLDivElement>(null);
+  const ticketRef = useRef<HTMLDivElement>(null);
   const stubRef = useRef<HTMLDivElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
   const [isRevealed, setIsRevealed] = useState(false);
   const audioCtxRef = useRef<AudioContext | null>(null);
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.2 }
-    );
+  const barcodeHeights = useRef(generateBarcodeHeights()).current;
+  const barcodeWidths = [2, 1, 3, 1, 2, 4, 1, 2, 3, 1, 2, 1, 3, 2, 1, 4, 2, 1, 3, 1, 2, 3, 1, 2];
 
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
+  useEffect(() => {
+    const section = sectionRef.current;
+    const title = titleRef.current;
+    const instruct = instructRef.current;
+    const ticket = ticketRef.current;
+    if (!section || !title || !instruct || !ticket) return;
+
+    const reduce = window.matchMedia(
+      '(prefers-reduced-motion: reduce)'
+    ).matches;
+    const triggers: ScrollTrigger[] = [];
+
+    if (reduce) {
+      gsap.set([title, instruct, ticket], { opacity: 1, y: 0 });
+      return;
     }
 
-    return () => observer.disconnect();
+    gsap.set(title, { opacity: 0, y: 30 });
+    gsap.set(instruct, { opacity: 0, y: 20 });
+    gsap.set(ticket, { opacity: 0, y: 40 });
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: section,
+        start: 'top 75%',
+        end: 'top 30%',
+        scrub: true,
+      },
+    });
+
+    tl.to(title, { opacity: 1, y: 0, ease: 'none' }, 0)
+      .to(instruct, { opacity: 1, y: 0, ease: 'none' }, 0.15)
+      .to(ticket, { opacity: 1, y: 0, ease: 'none' }, 0.3);
+
+    if (tl.scrollTrigger) triggers.push(tl.scrollTrigger);
+
+    return () => {
+      triggers.forEach((t) => t.kill());
+    };
   }, []);
 
   // Init audio on user interaction
   const initAudio = () => {
     if (!audioCtxRef.current) {
-      const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+      const AudioContext =
+        window.AudioContext || (window as any).webkitAudioContext;
       audioCtxRef.current = new AudioContext();
     }
     if (audioCtxRef.current.state === 'suspended') {
@@ -48,7 +90,6 @@ export default function CinemaTicket({ onRasgar }: CinemaTicketProps) {
     if (!ctx) return;
     const t = ctx.currentTime;
 
-    // White noise burst for tear
     const bufferSize = ctx.sampleRate * 0.4;
     const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
     const data = buffer.getChannelData(0);
@@ -63,7 +104,6 @@ export default function CinemaTicket({ onRasgar }: CinemaTicketProps) {
     gain.gain.setValueAtTime(0.2, t);
     gain.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
 
-    // Lowpass filter for paper texture
     const filter = ctx.createBiquadFilter();
     filter.type = 'lowpass';
     filter.frequency.setValueAtTime(3000, t);
@@ -82,7 +122,6 @@ export default function CinemaTicket({ onRasgar }: CinemaTicketProps) {
     playTearSound();
     setIsRevealed(true);
 
-    // O canhoto "voa" ao rasgar
     if (
       stubRef.current &&
       !window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -97,7 +136,6 @@ export default function CinemaTicket({ onRasgar }: CinemaTicketProps) {
       });
     }
 
-    // Dispara a linha do tempo (Cena 2.5)
     onRasgar?.();
   };
 
@@ -119,13 +157,9 @@ export default function CinemaTicket({ onRasgar }: CinemaTicketProps) {
 
       <div className="max-w-5xl mx-auto px-6 relative z-10">
         {/* Title */}
-        <div
-          className={`text-center mb-16 transition-all duration-1000 ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-          }`}
-        >
+        <div ref={titleRef}>
           <h2
-            className="font-display text-4xl md:text-5xl lg:text-6xl text-[#b00d1e] leading-tight"
+            className="font-display text-4xl md:text-5xl lg:text-6xl text-[#b00d1e] leading-tight text-center"
             style={{ fontWeight: 500 }}
           >
             você lembra
@@ -135,11 +169,7 @@ export default function CinemaTicket({ onRasgar }: CinemaTicketProps) {
         </div>
 
         {/* Instruction text */}
-        <div
-          className={`text-center mb-8 transition-all duration-1000 delay-300 ${
-            isVisible ? 'opacity-100' : 'opacity-0'
-          }`}
-        >
+        <div ref={instructRef} className="text-center mt-8 mb-8">
           <p className="font-body text-sm text-[#b00d1e] tracking-wide">
             Rasga aqui pra começar o filme
           </p>
@@ -149,17 +179,12 @@ export default function CinemaTicket({ onRasgar }: CinemaTicketProps) {
         </div>
 
         {/* Cinema Ticket */}
-        <div
-          className={`flex justify-center transition-all duration-1000 delay-500 ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
-          }`}
-        >
+        <div ref={ticketRef} className="flex justify-center mt-12">
           <div
             onClick={handleTicketClick}
             className="relative cursor-pointer group"
             style={{ perspective: '1000px' }}
           >
-            {/* Ticket container */}
             <div
               className={`relative flex transition-transform duration-700 ${
                 isRevealed ? 'translate-x-8 md:translate-x-16' : 'translate-x-0'
@@ -170,7 +195,8 @@ export default function CinemaTicket({ onRasgar }: CinemaTicketProps) {
                 className="relative text-[#f8dee2] px-8 py-8 md:px-12 md:py-10 w-64 md:w-80"
                 style={{
                   backgroundColor: '#c3505c',
-                  boxShadow: '0 1px 1px rgba(0,0,0,0.12), 0 2px 2px rgba(0,0,0,0.12), 0 4px 4px rgba(0,0,0,0.12), 0 8px 8px rgba(0,0,0,0.12), 0 16px 16px rgba(0,0,0,0.12)',
+                  boxShadow:
+                    '0 1px 1px rgba(0,0,0,0.12), 0 2px 2px rgba(0,0,0,0.12), 0 4px 4px rgba(0,0,0,0.12), 0 8px 8px rgba(0,0,0,0.12), 0 16px 16px rgba(0,0,0,0.12)',
                 }}
               >
                 {/* Ticket texture overlay */}
@@ -200,11 +226,11 @@ export default function CinemaTicket({ onRasgar }: CinemaTicketProps) {
                 <div className="space-y-3 font-mono text-xs md:text-sm relative z-10">
                   <div className="flex justify-between">
                     <span className="opacity-60">DATE:</span>
-                    <span className="tracking-wide">14 FEB 2024</span>
+                    <span className="tracking-wide">14 FEV 2023</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="opacity-60">TIME:</span>
-                    <span className="tracking-wide">19:00</span>
+                    <span className="tracking-wide">23:42</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="opacity-60">MOVIE:</span>
@@ -226,7 +252,7 @@ export default function CinemaTicket({ onRasgar }: CinemaTicketProps) {
                   {/* Serial number */}
                   <div className="pt-3 border-t border-[#f8dee2]/20">
                     <p className="text-[9px] tracking-[0.3em] opacity-40 text-center">
-                      S/N 0013-0214-2024-∞
+                      S/N 0013-0214-2023-∞
                     </p>
                   </div>
                 </div>
@@ -241,7 +267,8 @@ export default function CinemaTicket({ onRasgar }: CinemaTicketProps) {
                 className="relative border-l-2 border-dashed border-[#f8dee2]/50 px-4 py-8 md:px-6 md:py-10 w-20 md:w-24 flex flex-col items-center justify-center"
                 style={{
                   backgroundColor: '#c3505c',
-                  boxShadow: '0 1px 1px rgba(0,0,0,0.12), 0 2px 2px rgba(0,0,0,0.12), 0 4px 4px rgba(0,0,0,0.12)',
+                  boxShadow:
+                    '0 1px 1px rgba(0,0,0,0.12), 0 2px 2px rgba(0,0,0,0.12), 0 4px 4px rgba(0,0,0,0.12)',
                 }}
               >
                 {/* Stub texture */}
@@ -254,23 +281,20 @@ export default function CinemaTicket({ onRasgar }: CinemaTicketProps) {
                   }}
                 />
 
-                {/* Barcode lines — more realistic */}
+                {/* Barcode lines */}
                 <div className="flex gap-[2px] h-24 md:h-32 relative z-10">
-                  {Array.from({ length: 24 }).map((_, i) => {
-                    const widths = [2, 1, 3, 1, 2, 4, 1, 2, 3, 1, 2, 1, 3, 2, 1, 4, 2, 1, 3, 1, 2, 3, 1, 2];
-                    return (
-                      <div
-                        key={i}
-                        className="bg-[#f8dee2]"
-                        style={{
-                          width: `${widths[i]}px`,
-                          height: `${35 + Math.random() * 55}%`,
-                          opacity: 0.75,
-                          marginRight: i % 3 === 0 ? '1px' : '0px',
-                        }}
-                      />
-                    );
-                  })}
+                  {barcodeWidths.map((w, i) => (
+                    <div
+                      key={i}
+                      className="bg-[#f8dee2]"
+                      style={{
+                        width: `${w}px`,
+                        height: `${barcodeHeights[i]}%`,
+                        opacity: 0.75,
+                        marginRight: i % 3 === 0 ? '1px' : '0px',
+                      }}
+                    />
+                  ))}
                 </div>
 
                 <p className="mt-3 font-mono text-[8px] tracking-widest opacity-50 text-center relative z-10">
@@ -285,9 +309,7 @@ export default function CinemaTicket({ onRasgar }: CinemaTicketProps) {
             </div>
 
             {/* Shadow under ticket */}
-            <div
-              className="absolute -bottom-4 left-4 right-4 h-8 bg-black/10 blur-xl rounded-full -z-10 transition-all duration-500 group-hover:scale-110"
-            />
+            <div className="absolute -bottom-4 left-4 right-4 h-8 bg-black/10 blur-xl rounded-full -z-10 transition-all duration-500 group-hover:scale-110" />
           </div>
         </div>
       </div>
