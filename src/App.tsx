@@ -8,6 +8,8 @@ import HeartbeatSection from './sections/HeartbeatSection';
 import TravelSection from './sections/TravelSection';
 import BeforeWeMet from './sections/BeforeWeMet';
 import PlaylistSection from './sections/PlaylistSection';
+import StarMapSection from './sections/StarMapSection';
+import MoonPhaseSection from './sections/MoonPhaseSection';
 import ThankYouSection from './sections/ThankYouSection';
 import NoiseOverlay from './components/NoiseOverlay';
 
@@ -38,6 +40,8 @@ function App() {
           <BeforeWeMet />
           <TravelSection />
           <PlaylistSection />
+          <StarMapSection />
+          <MoonPhaseSection />
           <ThankYouSection />
         </main>
       )}
