@@ -88,39 +88,6 @@
     font-family: 'Dancing Script', cursive;
   }
 
-  /* Torn paper edge effect */
-  .torn-edge-bottom {
-    position: relative;
-  }
-  .torn-edge-bottom::after {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    right: 0;
-    height: 40px;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 40' preserveAspectRatio='none'%3E%3Cpath d='M0,0 Q30,25 60,8 T120,15 T180,5 T240,20 T300,10 T360,18 T420,6 T480,22 T540,12 T600,8 T660,20 T720,5 T780,15 T840,10 T900,25 T960,8 T1020,18 T1080,6 T1140,20 T1200,10 L1200,40 L0,40 Z' fill='%23f8dee2'/%3E%3C/svg%3E");
-    background-size: 1200px 40px;
-    background-repeat: repeat-x;
-    z-index: 2;
-  }
-
-  .torn-edge-top {
-    position: relative;
-  }
-  .torn-edge-top::before {
-    content: '';
-    position: absolute;
-    top: -2px;
-    left: 0;
-    right: 0;
-    height: 40px;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 40' preserveAspectRatio='none'%3E%3Cpath d='M0,40 Q30,15 60,32 T120,25 T180,35 T240,20 T300,30 T360,22 T420,34 T480,18 T540,28 T600,32 T660,20 T720,35 T780,25 T840,30 T900,15 T960,32 T1020,22 T1080,34 T1140,20 T1200,30 L1200,0 L0,0 Z' fill='%23f8dee2'/%3E%3C/svg%3E");
-    background-size: 1200px 40px;
-    background-repeat: repeat-x;
-    z-index: 2;
-  }
-
   /* Polaroid frame effect */
   .polaroid {
     background: white;

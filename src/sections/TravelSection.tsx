@@ -125,7 +125,6 @@ export default function TravelSection() {
         </div>
       </div>
 
-      {/* Bottom torn edge — removida pois PlaylistSection é vermelho também (mesma cor) */}
     </section>
   );
 }
