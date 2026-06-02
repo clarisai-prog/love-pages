@@ -129,7 +129,7 @@ export default function ThankYouSection() {
           }`}
         >
           <p className="font-display text-lg text-[#b00d1e]/40 tracking-[0.3em]">
-            2024
+            {new Date().getFullYear()}
           </p>
         </div>
       </div>

@@ -19,11 +19,11 @@ interface Star {
   blinkDuration: number;
 }
 
-/* 70 estrelas espalhadas proceduralmente — seed fixo para
-   consistência entre renders (evita flicker hidratação SSR).  */
-function generateStars(count = 70): Star[] {
+/* 90 estrelas espalhadas proceduralmente — seed fixo para
+   consistência entre renders (evita flicker hidratação SSR).
+   Raios reduzidos (0.15–0.55) para pontos delicados, não manchas.  */
+function generateStars(count = 90): Star[] {
   const stars: Star[] = [];
-  // Pseudo-random com seed simples para reprodutibilidade
   let seed = 42;
   const rnd = () => {
     seed = (seed * 16807 + 0) % 2147483647;
@@ -34,10 +34,10 @@ function generateStars(count = 70): Star[] {
     stars.push({
       cx: rnd() * 100,
       cy: rnd() * 100,
-      r: 0.5 + rnd() * 1.5,
-      opacity: 0.3 + rnd() * 0.7,
-      blinkDelay: rnd() * 4,
-      blinkDuration: 2 + rnd() * 3,
+      r: 0.15 + rnd() * 0.4,
+      opacity: 0.25 + rnd() * 0.75,
+      blinkDelay: rnd() * 5,
+      blinkDuration: 2.5 + rnd() * 3.5,
     });
   }
   return stars;
@@ -65,7 +65,7 @@ const CORACAO_PATH =
 export default function StarMapSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
-  const stars = useMemo(() => generateStars(70), []);
+  const stars = useMemo(() => generateStars(90), []);
   const reduce = useMemo(() => {
     if (typeof window === 'undefined') return false;
     return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -112,29 +112,33 @@ export default function StarMapSection() {
       className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden"
       style={{ backgroundColor: '#0d0d0f' }}
     >
-      {/* ── Transição suave do creme/rosa para o escuro ── */}
-      <div className="absolute top-0 left-0 right-0 h-32 pointer-events-none z-10">
+      {/* ── Transição suave do creme/rosa para o escuro ──
+           h-48 (192px) cobre completamente a borda rasgada #f8dee2
+           da PlaylistSection. Gradiente vai do rosa exato ao preto sólido.  */}
+      <div className="absolute -top-1 left-0 right-0 h-48 pointer-events-none z-20">
         <svg
-          viewBox="0 0 1440 120"
+          viewBox="0 0 1440 192"
           preserveAspectRatio="none"
           className="w-full h-full"
         >
           <defs>
             <linearGradient id="nightFade" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#faf5f0" />
-              <stop offset="40%" stopColor="#c3505c" stopOpacity="0.6" />
-              <stop offset="100%" stopColor="#0d0d0f" stopOpacity="0" />
+              <stop offset="0%" stopColor="#f8dee2" />
+              <stop offset="35%" stopColor="#c3505c" />
+              <stop offset="70%" stopColor="#0d0d0f" />
+              <stop offset="100%" stopColor="#0d0d0f" />
             </linearGradient>
           </defs>
-          <rect width="1440" height="120" fill="url(#nightFade)" />
+          <rect width="1440" height="192" fill="url(#nightFade)" />
         </svg>
       </div>
 
-      {/* ── Campo de estrelas (SVG) ── */}
+      {/* ── Campo de estrelas (SVG) ──
+           xMidYMid slice mantém círculos perfeitos e cobre a tela inteira.  */}
       <svg
         className="absolute inset-0 w-full h-full pointer-events-none"
         viewBox="0 0 100 100"
-        preserveAspectRatio="none"
+        preserveAspectRatio="xMidYMid slice"
         aria-hidden="true"
       >
         {stars.map((s, i) => (
@@ -163,7 +167,7 @@ export default function StarMapSection() {
       <div className="relative z-10 w-full max-w-2xl mx-auto px-6">
         <svg
           viewBox="0 0 100 100"
-          className="w-64 h-64 md:w-80 md:h-80 mx-auto drop-shadow-[0_0_30px_rgba(195,80,92,0.35)]"
+          className="w-64 h-64 md:w-96 md:h-96 lg:w-[28rem] lg:h-[28rem] mx-auto drop-shadow-[0_0_30px_rgba(195,80,92,0.35)]"
           aria-label="Constelação de coração"
           role="img"
         >

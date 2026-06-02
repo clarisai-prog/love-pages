@@ -150,13 +150,32 @@ export default function MoonPhaseSection() {
         </p>
       </div>
 
-      {/* ── Borda inferior rasgada → transição para ThankYouSection ── */}
+      {/* ── Transição suave escuro → rosa do ThankYouSection ── */}
+      <div className="absolute bottom-0 left-0 right-0 h-24 pointer-events-none z-10">
+        <svg
+          viewBox="0 0 1440 96"
+          preserveAspectRatio="none"
+          className="w-full h-full"
+        >
+          <defs>
+            <linearGradient id="moonFade" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#0d0d0f" />
+              <stop offset="50%" stopColor="#0d0d0f" />
+              <stop offset="85%" stopColor="#c3505c" />
+              <stop offset="100%" stopColor="#f8dee2" />
+            </linearGradient>
+          </defs>
+          <rect width="1440" height="96" fill="url(#moonFade)" />
+        </svg>
+      </div>
+
+      {/* ── Borda inferior rasgada → rosa do ThankYouSection ── */}
       <div className="absolute bottom-0 left-0 right-0">
         <svg
           viewBox="0 0 1440 60"
           preserveAspectRatio="none"
           className="w-full h-10 md:h-16"
-          fill="#faf5f0"
+          fill="#f8dee2"
         >
           <path d="M0,30 Q30,5 60,25 T120,15 T180,28 T240,10 T300,22 T360,8 T420,26 T480,12 T540,24 T600,10 T660,20 T720,6 T780,25 T840,14 T900,22 T960,8 T1020,26 T1080,12 T1140,20 T1200,5 T1260,24 T1320,15 T1380,22 T1440,10 L1440,60 L0,60 Z" />
         </svg>
